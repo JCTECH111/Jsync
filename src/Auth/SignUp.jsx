@@ -5,7 +5,6 @@ import { client, ID, account } from '../lib/appwrite';
 import { ToastContainer, toast } from 'react-toastify';
 import { registerUserWithMetadata } from '../lib/mainSignup';// the main imported backend function
 import getCurrentDate from '../components/currentDate';
-import { useNavigate } from 'react-router-dom';
 
 
 const bucketId = import.meta.env.VITE_APPWRITE_BUCKET_ID;
@@ -20,7 +19,6 @@ export default function SignUp() {
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  const navigate = useNavigate();
 
   // Set the username and register the user
   const userName = `${fname} ${sname}`;
