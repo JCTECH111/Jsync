@@ -57,8 +57,8 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-md bg-white p-2 rounded-lg">
         <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
         <form onSubmit={handleSignIn}>
           <div className="mb-4">

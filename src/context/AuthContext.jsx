@@ -12,24 +12,15 @@ export const AuthProvider = ({ children }) => {
   // Simulate checking if the user is logged in
   const checkUser = async () => {
     try {
-      // Logic to retrieve user session information (e.g., from localStorage or an API)
       const storedUser = JSON.parse(localStorage.getItem('user')); // Example storage
       if (storedUser) {
         setUserInformation(storedUser);
         setUserId(storedUser.id);
-        setUserMetaInformation(storedUser.metadata || null);
-        setUserMetaId(storedUser.metadataId || null); // Add metadata ID if available
-      } else {
-        throw new Error('No user session found');
       }
     } catch (error) {
-      console.error('User check failed:', error);
-      setUserInformation(null);
-      setUserId(null);
-      setUserMetaInformation(null);
-      setUserMetaId(null);
+      console.error('Error checking user:', error);
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false once the check is complete
     }
   };
 
