@@ -179,7 +179,7 @@ async function sendEmailVerification() {
 
   return (
     <div className="flex items-center justify-center min-h-screen ">
-      <form onSubmit={submitForm} className="w-full max-w-md flex flex-col items-center bg-white p-8 rounded-lg shadow-lg space-y-6">
+      <form onSubmit={submitForm} className="w-full max-w-[30rem] flex flex-col items-center bg-white p-8 rounded-lg  space-y-6">
     <ToastContainer />
         {/* Title */}
         <h2 className="text-2xl font-bold text-gray-900">Sign Up</h2>
