@@ -1,61 +1,71 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { account } from '../lib/appwrite'; // Use your Appwrite instance here
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // User object (e.g., name, email, ID)
-  const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState(null); // User ID
-  const [customData, setCustomData] = useState(null); // Any additional data
+  const [userInformation, setUserInformation] = useState(null); // Store main user information
+  const [userId, setUserId] = useState(null); // Store user ID
+  const [userMetaInformation, setUserMetaInformation] = useState(null); // Store metadata
+  const [userMetaId, setUserMetaId] = useState(null); // Store metadata ID
+  const [loading, setLoading] = useState(true); // Loading state for authentication
 
-  // Check if the user is logged in
+  // Simulate checking if the user is logged in
   const checkUser = async () => {
     try {
-      const response = await account.get(); // Get the logged-in user
-      setUser(response);
-      setUserId(response.$id); // Extract user ID
-      await fetchCustomData(response.$id); // Fetch custom data if needed
+      // Logic to retrieve user session information (e.g., from localStorage or an API)
+      const storedUser = JSON.parse(localStorage.getItem('user')); // Example storage
+      if (storedUser) {
+        setUserInformation(storedUser);
+        setUserId(storedUser.id);
+        setUserMetaInformation(storedUser.metadata || null);
+        setUserMetaId(storedUser.metadataId || null); // Add metadata ID if available
+      } else {
+        throw new Error('No user session found');
+      }
     } catch (error) {
-      setUser(null);
+      console.error('User check failed:', error);
+      setUserInformation(null);
       setUserId(null);
-      setCustomData(null);
+      setUserMetaInformation(null);
+      setUserMetaId(null);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch additional user-related data from your "user_metadata" collection
-  const fetchCustomData = async (id) => {
+  // Simulate logging out the user
+  const logout = async () => {
     try {
-      // Use Appwrite's database API to fetch metadata based on the user ID
-      const response = await client.database.getDocument(
-        'user_metadata_collection_id', // Replace with your collection ID
-        id
-      );
-      setCustomData(response);
+      // Logic to handle user logout (e.g., clearing session data)
+      localStorage.removeItem('user'); // Example storage
+      setUserInformation(null);
+      setUserId(null);
+      setUserMetaInformation(null);
+      setUserMetaId(null);
     } catch (error) {
-      console.error('Failed to fetch user metadata:', error);
+      console.error('Logout failed:', error);
     }
   };
 
+  // Automatically check user session when the component mounts
   useEffect(() => {
     checkUser();
   }, []);
 
-  const logout = async () => {
-    try {
-      await account.deleteSession('current'); // Log out the user
-      setUser(null);
-      setUserId(null);
-      setCustomData(null);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ user, userId, customData, loading, logout }}>
+    <AuthContext.Provider
+      value={{
+        userInformation,
+        userId,
+        userMetaInformation,
+        userMetaId,
+        loading,
+        setUserInformation, // Allow other components to set user information
+        setUserId, // Allow other components to set user ID
+        setUserMetaInformation, // Allow setting user metadata
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -5,6 +5,7 @@ import { client, ID, account } from '../lib/appwrite';
 import { ToastContainer, toast } from 'react-toastify';
 import { registerUserWithMetadata } from '../lib/mainSignup';// the main imported backend function
 import getCurrentDate from '../components/currentDate';
+import { AuthContext } from '../context/AuthContext';
 
 
 const bucketId = import.meta.env.VITE_APPWRITE_BUCKET_ID;
