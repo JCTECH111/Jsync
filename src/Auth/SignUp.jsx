@@ -31,7 +31,7 @@ const imageId = ID.unique()
 
 async function sendEmailVerification() {
     try {
-        const response = await account.createVerification('http://localhost:5173/verify');
+        const response = await account.createVerification('https://jsync.vercel.app/verify');
         console.log("Verification email sent:", response);
         alert("A verification email has been sent to your email address. Please check your inbox.");
     } catch (error) {
@@ -157,14 +157,7 @@ async function sendEmailVerification() {
       await account.createEmailPasswordSession(email, password);
       showSuccessMessage("Temporary session created");
       // Simulate a loading or splash screen effect
-    
-      const timer = setTimeout(() => {
-        // Navigate to the Home screen after 3 seconds
-        navigate('/login');
-      }, 2000); // 3 seconds
   
-       clearTimeout(timer); // Clean up the timer
-   
       sendEmailVerification()
   
       // Success

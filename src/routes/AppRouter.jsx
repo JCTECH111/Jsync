@@ -10,6 +10,7 @@ import FileCards from '../components/FileCards';
 import HoverInfo from '../components/HoverInfo';
 import ProtectedRoute from './ProtectedRoute';
 import Home from '../landing/Home';
+import Verify from '../Auth/Verify';
 
 export default function AppRouter() {
     return (
@@ -19,6 +20,7 @@ export default function AppRouter() {
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/verify" element={<Verify />} />
           <Route path="/card" element={<FileCards />} />
           <Route path="/text" element={<UserMetadataForm />} />
           <Route path="/login" element={<HoverInfo />} />
