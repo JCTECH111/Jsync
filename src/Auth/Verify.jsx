@@ -21,7 +21,7 @@ function Verify() {
             text: "Your email has been successfully verified.",
             confirmButtonText: "Go to Dashboard",
           }).then(() => {
-            navigate("/dashboard");
+            navigate("/signin");
           });
         },
         (error) => {

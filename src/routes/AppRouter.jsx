@@ -19,8 +19,8 @@ export default function AppRouter() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify" element={<Verify />} />
-        <Route path="/card" element={<FileCards />} />
-        <Route path="/login" element={<HoverInfo />} />
+        {/* <Route path="/card" element={<FileCards />} /> */}
+        {/* <Route path="/login" element={<HoverInfo />} /> */}
 
         {/* Protected Routes */}
         <Route

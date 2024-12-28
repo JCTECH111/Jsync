@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { registerUserWithMetadata } from '../lib/mainSignup';// the main imported backend function
 import getCurrentDate from '../components/currentDate';
 import { AuthContext } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 
 const bucketId = import.meta.env.VITE_APPWRITE_BUCKET_ID;
@@ -179,8 +180,8 @@ async function sendEmailVerification() {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
-      <form onSubmit={submitForm} className="w-full max-w-[30rem] flex flex-col items-center bg-white p-8 rounded-lg  space-y-6">
+    <div className="flex flex-col items-center justify-center min-h-screen ">
+      <form onSubmit={submitForm} className="w-full max-w-[30rem] flex flex-col items-center bg-white p-8 rounded-lg  space-y-4">
     <ToastContainer />
         {/* Title */}
         <h2 className="text-2xl font-bold text-gray-900">Sign Up</h2>
@@ -201,7 +202,7 @@ async function sendEmailVerification() {
           </div>
           <label
             htmlFor="profile-pic"
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white text-sm rounded-md cursor-pointer hover:bg-indigo-500"
+            className="mt-4 px-4 py-2 bg-blue-600 text-white text-sm rounded-md cursor-pointer hover:bg-blue-500"
           >
             Upload Picture
           </label>
@@ -326,12 +327,16 @@ async function sendEmailVerification() {
           <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+        className="w-full py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-500 focus:ring-2 focus:ring-blue-400 focus:outline-none"
       >
         {isSubmitting ? 'Submitting...' : 'Sign Up'}
       </button>
         </div>
       </form>
+      <p className="mt-6 text-center text-xl text-gray-500">
+      Already had an account? {' '}
+      <Link to="/signin" className="font-semibold text-blue-600 hover:text-blue-500">SignIn</Link>
+    </p>
     </div>
   );
 }

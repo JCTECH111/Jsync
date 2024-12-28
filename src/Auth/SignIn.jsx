@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import SoundWaveLoader from '../components/SoundWaveLoader'; // Assuming you have this loader component
 import { account } from '../lib/appwrite'; // Assuming you have an Appwrite configuration file
@@ -91,6 +91,10 @@ export default function SignIn() {
             {loading ? <SoundWaveLoader /> : 'Sign In'}
           </button>
         </form>
+        <p className="mt-6 text-center text-xl text-gray-500">
+      Not Yet Registered? {' '}
+      <Link to="/signup" className="font-semibold text-blue-600 hover:text-blue-500">SignUp</Link>
+    </p>
       </div>
     </div>
   );
