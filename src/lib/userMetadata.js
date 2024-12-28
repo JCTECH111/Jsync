@@ -5,7 +5,7 @@ const databases = new Databases(client);
 const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const userMetadataCollectionId = import.meta.env.VITE_APPWRITE_USER_METADATA_ID;
 
-export const createUserMetadata = async ( userName, storageUsed, plan, createdAt, otp,avatarId) => {
+export const createUserMetadata = async ( userName, storageUsed, plan, createdAt, otp,avatarId, userId) => {
     try {
         // Create the data object to be stored
         const data = {
@@ -14,7 +14,8 @@ export const createUserMetadata = async ( userName, storageUsed, plan, createdAt
             plan,
             createdAt,
             otp: parseInt(otp, 10),
-            avatarId
+            avatarId,
+            userId
         };
         // Call createDocument with the correct parameters
         const response = await databases.createDocument(

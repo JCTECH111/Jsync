@@ -8,14 +8,11 @@ export const registerUserWithMetadata = async (email, password, name, storageUse
         const user = await signUpUser(email, password, name);
         console.log('Newly registered user:', user);
 
+        const ownerId = user.$id
+
         
-
-        // // Step 2: Automatically log in the user
-        // const session = await account.createSession(email, password); // Log in the user with email and password
-        // console.log('User logged in:', session);
-
         // // Step 3: Create user metadata
-        const metadataResponse = await createUserMetadata(name, storageUsed, plan, createdAt, otp, avatarId)
+        const metadataResponse = await createUserMetadata(name, storageUsed, plan, createdAt, otp, avatarId, ownerId)
 
         console.log('User registered and metadata created:', metadataResponse);
     } catch (error) {
