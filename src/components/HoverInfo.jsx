@@ -1,5 +1,5 @@
 // HoverInfo.js
-import React from 'react';
+
 
 const HoverInfo = () => {
   return (
