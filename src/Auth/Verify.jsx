@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { account } from "../lib/appwrite";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -37,13 +37,13 @@ function Verify() {
   }, [navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md flex flex-col items-center">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-gray-100">
+      <div className="flex flex-col items-center w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
         <SoundWaveLoader /> {/* Custom sound wave loader */}
-        <h1 className="text-2xl font-semibold text-gray-800 mt-6 text-center">
+        <h1 className="mt-6 text-2xl font-semibold text-center text-gray-800">
           Email Verification
         </h1>
-        <p className="text-gray-600 mt-4 text-center">
+        <p className="mt-4 text-center text-gray-600">
           Verifying your email. Please wait...
         </p>
       </div>
