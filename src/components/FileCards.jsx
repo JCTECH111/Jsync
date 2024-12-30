@@ -42,7 +42,7 @@ const FileCards = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-2">
       {/* Folders Section */}
       <div>
         <div className="flex items-center justify-between mb-4">
