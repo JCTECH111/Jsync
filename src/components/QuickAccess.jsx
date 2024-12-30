@@ -1,30 +1,42 @@
-// components/QuickAccess.js
-import React from 'react';
+import React from "react";
+import {
+  PhotoIcon,
+  VideoCameraIcon,
+  MusicalNoteIcon,
+  DocumentTextIcon,
+ ArrowDownOnSquareStackIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 
 const QuickAccess = () => {
   const quickAccessItems = [
-    { label: 'Images', color: 'blue-500', icon: '🖼️' },
-    { label: 'Videos', color: 'purple-500', icon: '🎥' },
-    { label: 'Music', color: 'green-500', icon: '🎵' },
-    { label: 'Documents', color: 'yellow-500', icon: '📄' },
-    { label: 'Downloads', color: 'blue-300', icon: '⬇️' },
-    { label: 'Add', color: 'gray-400', icon: '➕' },
+    { title: "Images", icon: PhotoIcon, bgColor: "bg-blue-500" },
+    { title: "Videos", icon: VideoCameraIcon, bgColor: "bg-purple-500" },
+    { title: "Music", icon: MusicalNoteIcon, bgColor: "bg-green-500" },
+    { title: "Documents", icon: DocumentTextIcon, bgColor: "bg-yellow-500" },
+    { title: "Downloads", icon: ArrowDownOnSquareStackIcon, bgColor: "bg-indigo-500" },
+    { title: "Add", icon: PlusIcon, bgColor: "bg-gray-400" },
   ];
 
   return (
-    <div className="mt-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-bold">Quick Access</h2>
-        <a href="#" className="text-blue-500">View All</a>
+    <div className="mt-8">
+      {/* Section Header */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-semibold">Quick Access</h2>
+        <a href="#view-all-quick-access" className="text-blue-500 hover:underline">
+          View All
+        </a>
       </div>
-      <div className="flex gap-4 mt-4">
+
+      {/* Quick Access Grid */}
+      <div className="grid grid-cols-3 gap-4 lg:grid-cols-6">
         {quickAccessItems.map((item, index) => (
           <div
             key={index}
-            className={`w-20 h-20 flex flex-col items-center justify-center rounded-lg bg-${item.color} text-white`}
+            className={`flex flex-col items-center justify-center p-4 space-y-2 text-white rounded-lg shadow ${item.bgColor}`}
           >
-            <span className="text-2xl">{item.icon}</span>
-            <span className="text-sm mt-2">{item.label}</span>
+            <item.icon className="w-8 h-8" />
+            <p className="text-sm font-medium">{item.title}</p>
           </div>
         ))}
       </div>
