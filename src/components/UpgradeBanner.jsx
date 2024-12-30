@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 function UpgradeBanner() {
   return (
-    <div className='grid lg:grid-cols-[20%_60%_20%] grid-cols-1 h-auto items-center justify-between w-full lg:h-40 gap-2 p-3 bg-blue-100 rounded-lg'>
+    <div className='grid lg:grid-cols-[20%_60%_20%] grid-cols-1 h-auto items-center text-center justify-between w-full lg:h-40 gap-2 p-3 bg-blue-100 rounded-lg'>
     <img alt='upgrade-image' src={Upgrade} className='h-32'/>
       <div className='flex flex-col gap-3 '>
         <h3 className='font-bold text-gray-900'>Get An Upgrade</h3>
