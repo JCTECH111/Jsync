@@ -28,7 +28,7 @@ const Dashboard = () => {
   const [notificationOpen, setNotificationOpen] = useState(false); // Notification state
 
   return (
-    <div className="h-screen w-full grid lg:grid-cols-[20%_60%_20%] grid-cols-1 bg-red-700">
+    <div className="h-screen w-full grid lg:grid-cols-[15%_65%_20%] grid-cols-1 bg-red-700">
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 z-20 lg:w-full w-64 bg-blue-600 text-white p-5 space-y-4 transition-transform ${
@@ -127,7 +127,7 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
-        <div className="flex-1 p-6 overflow-y-auto bg-white">
+        <div className="flex-1 p-4 overflow-y-auto bg-white">
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/files" element={<Files />} />
