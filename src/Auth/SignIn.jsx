@@ -31,6 +31,9 @@ export default function SignIn() {
       const user = await account.get();
       setUserInformation(user); // Store user information in context
       setUserId(user.$id); // Store user ID in context
+      
+      // Persist user ID in localStorage
+      localStorage.setItem('userId', user.$id);
 
       // Show success notification
       Swal.fire({
@@ -57,9 +60,9 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md bg-white p-2 rounded-lg">
-        <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="w-full max-w-md p-2 bg-white rounded-lg">
+        <h2 className="mb-6 text-2xl font-bold text-center">Sign In</h2>
         <form onSubmit={handleSignIn}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
@@ -86,12 +89,12 @@ export default function SignIn() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none relative"
+            className="relative w-full py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
           >
             {loading ? <SoundWaveLoader /> : 'Sign In'}
           </button>
         </form>
-        <p className="mt-6 text-center text-xl text-gray-500">
+        <p className="mt-6 text-xl text-center text-gray-500">
       Not Yet Registered? {' '}
       <Link to="/signup" className="font-semibold text-blue-600 hover:text-blue-500">SignUp</Link>
     </p>

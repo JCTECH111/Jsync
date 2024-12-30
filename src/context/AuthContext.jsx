@@ -4,7 +4,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [userInformation, setUserInformation] = useState(null); // Store main user information
-  const [userId, setUserId] = useState(null); // Store user ID
+  const [userId, setUserId] = useState(() => localStorage.getItem('userId') || null);; // Store user ID
   const [userMetaInformation, setUserMetaInformation] = useState(null); // Store metadata
   const [userMetaId, setUserMetaId] = useState(null); // Store metadata ID
   const [loading, setLoading] = useState(true); // Loading state for authentication
