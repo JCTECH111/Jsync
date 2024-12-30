@@ -62,7 +62,7 @@ const RecentFiles = () => {
   };
 
   return (
-    <div className="p-2 bg-gray-50">
+    <div className="p-2 mt-5 bg-gray-50">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold">Recent Files</h2>
         <a href="#view-all" className="text-blue-500 hover:underline">
