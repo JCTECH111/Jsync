@@ -4,6 +4,7 @@ import ActivityChart from '../components/DailyUsageChart'
 import FileCards from '../components/FileCards'
 import QuickAccess from '../components/QuickAccess'
 import RecentFiles from '../components/RecentFiles'
+import Footer from '../components/Footer'
 function Overview() {
   return (
     <div>
@@ -12,6 +13,7 @@ function Overview() {
       <FileCards />
       <QuickAccess />
       <RecentFiles />
+      <Footer />
     </div>
   )
 }
