@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FolderIcon, EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
 const FileCards = () => {
