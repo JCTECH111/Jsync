@@ -17,7 +17,7 @@ import {
 // Import your dashboard pages/components
 import Overview from './Overview';
 import Files from './Files';
-import Activities from './Activities';
+import ActivitiesPage from './Activities';
 import Bookmarked from './Bookmarked';
 import Search from './Search';
 import Settings from './Settings';
@@ -132,7 +132,7 @@ const Dashboard = () => {
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/files" element={<Files />} />
-            <Route path="/activities" element={<Activities />} />
+            <Route path="/activities" element={<ActivitiesPage />} />
             <Route path="/bookmarked" element={<Bookmarked />} />
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
