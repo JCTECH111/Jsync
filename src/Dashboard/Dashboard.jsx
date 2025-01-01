@@ -21,6 +21,8 @@ import Activities from './Activities';
 import Bookmarked from './Bookmarked';
 import Search from './Search';
 import Settings from './Settings';
+import StorageOverview from '../components/StorageOverview';
+
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false); // For left sidebar
@@ -31,9 +33,8 @@ const Dashboard = () => {
     <div className="h-screen w-full grid lg:grid-cols-[15%_65%_20%] grid-cols-1 bg-red-700">
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 z-20 lg:w-full w-64 bg-blue-600 text-white p-5 space-y-4 transition-transform ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:relative`}
+        className={`fixed inset-y-0 z-20 lg:w-full w-64 bg-blue-600 text-white p-5 space-y-4 transition-transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 lg:relative`}
       >
         <div className="flex justify-between">
           <h2 className="text-xl font-semibold">File Manager</h2>
@@ -85,8 +86,8 @@ const Dashboard = () => {
           </button>
           <h1 className="text-2xl font-semibold text-gray-700">Dashboard</h1>
           <div className="flex items-center space-x-4">
-             {/* Notification Icon */}
-             <div className="relative">
+            {/* Notification Icon */}
+            <div className="relative">
               <button
                 className="relative"
                 onClick={() => setNotificationOpen(!notificationOpen)}
@@ -141,18 +142,17 @@ const Dashboard = () => {
 
       {/* Right Sidebar */}
       <div
-    className={`fixed inset-y-0 right-0 lg:w-full w-64 bg-white border-[1px] border-gray-300 text-white p-4 transition-transform ${
-      storageNav ? 'translate-x-0' : 'translate-x-full'
-    } lg:translate-x-0 lg:relative`}
-  >
-  <button
-              className="flex float-right lg:hidden"
-              onClick={() => setStorageNav(!storageNav)}
-            >
-              <ArrowRightCircleIcon className="w-6 h-6 text-gray-700" />
-            </button>
+        className={`fixed inset-y-0 right-0 lg:w-full w-64 bg-white border-[1px] border-gray-300 text-white p-4 transition-transform ${storageNav ? 'translate-x-0' : 'translate-x-full'
+          } lg:translate-x-0 lg:relative overflow-y-scroll`}
+      >
+        <button
+          className="flex float-right lg:hidden"
+          onClick={() => setStorageNav(!storageNav)}
+        >
+          <ArrowRightCircleIcon className="w-6 h-6 text-gray-700" />
+        </button>
         <h2 className="text-lg font-semibold text-gray-700">Storage Overview</h2>
-        {/* Add storage details */}
+        <StorageOverview />
       </div>
     </div>
   );
