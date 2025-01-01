@@ -21,11 +21,20 @@ const SearchPage = () => {
   const handleSearchChange = (e) => {
     const input = e.target.value;
     setQuery(input);
-    setFilteredSuggestions(
-      suggestions.filter((suggestion) =>
-        suggestion.toLowerCase().includes(input.toLowerCase())
-      )
-    );
+    if (input) {
+      setFilteredSuggestions(
+        suggestions.filter((suggestion) =>
+          suggestion.toLowerCase().includes(input.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setQuery(suggestion);
+    setFilteredSuggestions([]);
   };
 
   const handleActionClick = (id) => {
@@ -39,24 +48,26 @@ const SearchPage = () => {
       </h2>
 
       {/* Search Input with Suggestions */}
-      <div className="relative flex items-center mb-6">
-        <input
-          type="text"
-          placeholder="Search documents..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={query}
-          onChange={handleSearchChange}
-        />
-        <button className="px-4 py-3 bg-blue-500 rounded-r-lg hover:bg-blue-600">
-          <MagnifyingGlassIcon className="w-6 h-6 text-white" />
-        </button>
+      <div className="relative flex flex-col mb-6">
+        <div className="flex items-center">
+          <input
+            type="text"
+            placeholder="Search documents..."
+            className="w-full px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={query}
+            onChange={handleSearchChange}
+          />
+          <button className="px-4 py-3 bg-blue-500 rounded-r-lg hover:bg-blue-600">
+            <MagnifyingGlassIcon className="w-6 h-6 text-white" />
+          </button>
+        </div>
         {query && filteredSuggestions.length > 0 && (
-          <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+          <ul className="relative z-10 w-full mt-5 bg-white border border-gray-300 rounded-lg shadow-lg">
             {filteredSuggestions.map((suggestion, index) => (
               <li
                 key={index}
                 className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                onClick={() => setQuery(suggestion)}
+                onClick={() => handleSuggestionClick(suggestion)}
               >
                 {suggestion}
               </li>
