@@ -6,6 +6,7 @@ import {
     PaperClipIcon,
     DocumentPlusIcon
 } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 function StorageOverview() {
     const [storageUsed, setStorageUsed] = useState(0); // Used storage (percentage)
@@ -17,7 +18,7 @@ function StorageOverview() {
             try {
                 //   const response = await fetch("/api/storage"); // Replace with your server endpoint
                 const data = {
-                    "used": 35,  // Used storage in GB
+                    "used": 34,  // Used storage in GB
                     "total": 100 // Total storage capacity in GB
                 }
                     ;
@@ -93,13 +94,13 @@ function StorageOverview() {
                     </div>
 
                     <div className="absolute flex flex-col items-center justify-center top-[11rem]">
-                    <span className="mt-4 text-2xl font-semibold text-gray-800">
-                        {Math.round(storageUsed)}%
-                    </span>
-                    <p className="text-sm text-gray-500">
-                        {Math.round((storageUsed / 100) * totalStorage)}GB of {totalStorage}GB
-                        used
-                    </p>
+                        <span className="mt-4 text-2xl font-semibold text-gray-800">
+                            {Math.round(storageUsed)}%
+                        </span>
+                        <p className="text-sm text-gray-500">
+                            {Math.round((storageUsed / 100) * totalStorage)}GB of {totalStorage}GB
+                            used
+                        </p>
                     </div>
                 </div>
             </div>
@@ -126,10 +127,12 @@ function StorageOverview() {
             </div>
 
             {/* Upload Button */}
-            <button className="flex items-center justify-center w-full px-4 py-2 mt-6 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-                <DocumentPlusIcon className="w-5 h-5 mr-2" />
-                Upload
-            </button>
+            <Link to="/dashboard/upload">
+                <button className="flex items-center justify-center w-full px-4 py-2 mt-6 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+                    <DocumentPlusIcon className="w-5 h-5 mr-2" />
+                    Upload
+                </button>
+            </Link>
         </div>
     );
 }

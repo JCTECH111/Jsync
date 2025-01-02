@@ -22,6 +22,7 @@ import Bookmarked from './Bookmarked';
 import Search from './Search';
 import Settings from './Settings';
 import StorageOverview from '../components/StorageOverview';
+import FileManagementPage from './Uploading';
 
 
 const Dashboard = () => {
@@ -136,6 +137,7 @@ const Dashboard = () => {
             <Route path="/bookmarked" element={<Bookmarked />} />
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/upload" element={<FileManagementPage />} />
           </Routes>
         </div>
       </div>

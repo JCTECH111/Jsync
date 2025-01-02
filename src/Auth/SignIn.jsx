@@ -89,7 +89,7 @@ export default function SignIn() {
           <button 
             type="submit" 
             disabled={loading}
-            className="relative w-full py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
+            className="relative w-full py-2 text-white bg-blue-700 rounded-md hover:bg-blue-800 focus:outline-none"
           >
             {loading ? <SoundWaveLoader /> : 'Sign In'}
           </button>
