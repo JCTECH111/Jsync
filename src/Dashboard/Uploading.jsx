@@ -39,7 +39,7 @@ const FileManagementPage = () => {
     };
 
     return (
-        <div className="p-6">
+        <div className="p-1">
             {/* Page Header */}
             <div className="flex justify-center mb-6 border-b">
                 <button
@@ -64,7 +64,7 @@ const FileManagementPage = () => {
 
             {/* Uploading Document Form */}
             {activeTab === "upload" && (
-                <div className="p-6 bg-white rounded-lg shadow-md">
+                <div className="p-1 bg-white rounded-lg shadow-md">
                     <h3 className="mb-4 text-lg font-semibold text-gray-700">Upload File</h3>
                     <form className="space-y-4">
                         <div className="flex flex-col">
@@ -241,7 +241,7 @@ const FileManagementPage = () => {
 
             {/* Create Folder Form */}
             {activeTab === "folder" && (
-                <div className="p-6 bg-white rounded-lg shadow-md">
+                <div className="p-1 bg-white rounded-lg shadow-md">
                     <h3 className="mb-4 text-lg font-semibold text-gray-700">Create Folder</h3>
                     <form className="space-y-4">
                         <input type="hidden" name="ownerId" value="user123" />
