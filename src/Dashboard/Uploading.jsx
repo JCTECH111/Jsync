@@ -124,7 +124,7 @@ const FileManagementPage = () => {
                                     required
                                 />
                                 <button
-                                    className="flex items-center justify-center w-full px-4 py-2 mt-6 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                                    className="flex items-center justify-center w-full px-4 py-2 mt-6 text-sm font-medium text-white bg-blue-500 rounded-lg lg:w-[40%] hover:bg-blue-600"
                                     onClick={() => document.getElementById('fileInput').click()}
                                 >
                                     <DocumentPlusIcon className="w-5 h-5 mr-2" />
