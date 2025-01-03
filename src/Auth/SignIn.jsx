@@ -42,10 +42,11 @@ export default function SignIn() {
         text: 'Welcome back!',
         timer: 2000,
         showConfirmButton: false,
-      });
+      }).then(() =>{
+        // Navigate to the dashboard
+        navigate('/dashboard'); 
+      })
 
-      // Navigate to the dashboard
-      navigate('/dashboard');
     } catch (error) {
       console.error('Sign In Error:', error);
 

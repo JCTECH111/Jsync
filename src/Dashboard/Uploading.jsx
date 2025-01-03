@@ -8,6 +8,7 @@ import getCurrentDate from "../components/currentDate";
 import { useFetchFolders } from "../lib/fetchFolders";
 import SoundWaveLoader from '../components/SoundWaveLoader';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { AuthContext } from '../context/AuthContext';
 const FileManagementPage = () => {
     const { userId} = useContext(AuthContext);
@@ -103,7 +104,16 @@ const FileManagementPage = () => {
                 folderId,
                 ownerId,
             )
-            navigate('/dashboard');
+            // Show success notification
+      Swal.fire({
+        icon: 'success',
+        title: 'document uploaded Successful',
+        text: 'Saved!',
+        timer: 2000,
+        showConfirmButton: false,
+      }).then(() =>{
+          navigate('/dashboard');
+      })
         } catch (error) {
             showErrorMessage("Error uploadng document", error);
         } finally {
