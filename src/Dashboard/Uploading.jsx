@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DocumentPlusIcon } from "@heroicons/react/24/outline";
@@ -8,7 +8,9 @@ import getCurrentDate from "../components/currentDate";
 import { useFetchFolders } from "../lib/fetchFolders";
 import SoundWaveLoader from '../components/SoundWaveLoader';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 const FileManagementPage = () => {
+    const { userId} = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState("upload"); // To toggle forms
     const [isPublic, setIsPublic] = useState(false); // Toggle for file visibility
     const [selectedFile, setSelectedFile] = useState(null); // To preview the uploaded file
@@ -28,8 +30,8 @@ const FileManagementPage = () => {
             showErrorMessage("no folder found")
         }
     }, [fetchedFolders]);
-    const userString = localStorage.getItem('user');
-    const userId = userString;
+    // const userString = localStorage.getItem('user');
+    const ownerId = userId;
     const navigate = useNavigate();
     const showErrorMessage = (message) => {
         toast.error(message, {
@@ -99,7 +101,7 @@ const FileManagementPage = () => {
                 label,
                 fileSize,
                 folderId,
-                userId,
+                ownerId,
             )
             navigate('/dashboard');
         } catch (error) {
