@@ -4,12 +4,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import {
     DocumentPlusIcon
 } from "@heroicons/react/24/outline";
-
+import { registerUploadedFile } from "../lib/mainDocumentUploading";
 const FileManagementPage = () => {
     const [activeTab, setActiveTab] = useState("upload"); // To toggle forms
     const [isPublic, setIsPublic] = useState(false); // Toggle for file visibility
     const [selectedFile, setSelectedFile] = useState(null); // To preview the uploaded file
     const [fileSize, setFileSize] = useState('');
+    const [label, setLabel] = useState(""); // File label
+    const [folderId, setFolderId] = useState(""); // Selected folder
+    const [fileType, setFileType] = useState(""); // File type
     const [folders, setFolders] = useState([
         { id: "1", name: "Folder 1" },
         { id: "2", name: "Folder 2" },
@@ -36,6 +39,31 @@ const FileManagementPage = () => {
             // Set the file size in KB or MB
             setFileSize(sizeInKB > 1024 ? `${sizeInMB} MB` : `${sizeInKB} KB`);
         }
+    };
+
+
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        if (!label || !folder || !selectedFile || !fileType) {
+            toast.error("Please fill in all fields and upload a file.");
+            return;
+        }
+
+        // Retrieve all form data
+        const formData = {
+            label,
+            folderId,
+            fileType,
+            isPublic,
+            fileName: selectedFile.name,
+            fileSize,
+            modifiedAt: getCurrentDateTime(),
+        };
+
+        console.log("Form Data:", formData);
+        toast.success("File uploaded successfully!");
     };
 
     return (
@@ -66,13 +94,15 @@ const FileManagementPage = () => {
             {activeTab === "upload" && (
                 <div className="p-1 bg-white rounded-lg shadow-md">
                     <h3 className="mb-4 text-lg font-semibold text-gray-700">Upload File</h3>
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         <div className="flex flex-col">
                             <label className="font-medium text-gray-600">Label</label>
                             <input
                                 type="text"
                                 className="p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 placeholder="Enter file label"
+                                value={label}
+                                onChange={(e) => setLabel(e.target.value)}
                                 required
                             />
                         </div>
@@ -81,6 +111,8 @@ const FileManagementPage = () => {
                             <select
                                 className="p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 required
+                                value={folderId}
+                                onChange={(e) => setFolderId(e.target.value)}
                             >
                                 <option value="">Select Folder</option>
                                 {folders.map((folder) => (
@@ -104,6 +136,8 @@ const FileManagementPage = () => {
                             <select
                                 className="p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 required
+                                value={fileType}
+                                onChange={(e) => setFileType(e.target.value)}
                             >
                                 <option value="">Select File Type</option>
                                 <option value="music">Music</option>

@@ -11,7 +11,7 @@ const userFileCollectionID = import.meta.env.VITE_APPWRITE_FILES_ID;
  * @param {string} fileId - Unique ID of the file.
  * @param {string} fileName - Name of the file.
  * @param {string} fileType - MIME type of the file.
- * @param {number} fileSize - Size of the file in bytes.
+ * @param {string} fileSize - Size of the file in bytes.
  * @param {string} createdAt - Timestamp when the file was created.
  * @param {string} updatedAt - Timestamp when the file was last updated.
  * @param {string} ownerId - ID of the user who owns the file.
@@ -23,13 +23,13 @@ export const createFileContent = async (
     fileId,
     fileName,
     fileType,
-    fileSize,
     createdAt,
     updatedAt,
     ownerId,
     folderId,
     isPublic,
-    Label
+    Label,
+    fileSize,
 ) => {
     try {
         // Validate inputs
@@ -42,13 +42,13 @@ export const createFileContent = async (
             fileId,
             fileName,
             fileType,
-            fileSize: parseInt(fileSize, 10), // Ensure fileSize is an integer
             createdAt,
             updatedAt,
             ownerId,
             folderId: folderId || null, // Optional field, default to null
             isPublic,
-            Label
+            Label,
+            fileSize,
         };
 
         // Define permissions

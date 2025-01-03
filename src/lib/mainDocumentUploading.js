@@ -6,13 +6,13 @@ export const registerUploadedFile = async (
     documentId,
     fileName,
     fileType,
-    fileSize,
     createdAt,
     updatedAt,
     ownerId,
     folderId = null,
     isPublic = false,
-    Label = ''
+    Label = '',
+    fileSize,
 ) => {
     try {
         if (!file || !documentId) {
@@ -30,13 +30,13 @@ export const registerUploadedFile = async (
             fileId,
             fileName,
             fileType,
-            fileSize,
             createdAt,
             updatedAt,
             ownerId,
             folderId,
             isPublic,
-            Label
+            Label,
+            fileSize,
         );
         console.log('Uploaded file metadata:', mainFileData);
 
