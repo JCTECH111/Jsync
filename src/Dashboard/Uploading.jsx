@@ -10,8 +10,11 @@ import SoundWaveLoader from '../components/SoundWaveLoader';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../context/AuthContext';
+import {
+    FolderOpenIcon
+  } from "@heroicons/react/24/outline";
 const FileManagementPage = () => {
-    const { userId} = useContext(AuthContext);
+    const { userId } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState("upload"); // To toggle forms
     const [isPublic, setIsPublic] = useState(false); // Toggle for file visibility
     const [selectedFile, setSelectedFile] = useState(null); // To preview the uploaded file
@@ -105,15 +108,15 @@ const FileManagementPage = () => {
                 ownerId,
             )
             // Show success notification
-      Swal.fire({
-        icon: 'success',
-        title: 'document uploaded Successful',
-        text: 'Saved!',
-        timer: 2000,
-        showConfirmButton: false,
-      }).then(() =>{
-          navigate('/dashboard');
-      })
+            Swal.fire({
+                icon: 'success',
+                title: 'document uploaded Successful',
+                text: 'Saved!',
+                timer: 2000,
+                showConfirmButton: false,
+            }).then(() => {
+                navigate('/dashboard');
+            })
         } catch (error) {
             showErrorMessage("Error uploadng document", error);
         } finally {
@@ -174,8 +177,9 @@ const FileManagementPage = () => {
                             >
                                 <option value="">Select Folder</option>
                                 {folders.map((folder) => (
-                                    <option key={folder.$id} value={folder.$id}>
-                                        {folder.folderName}
+                                    <option key={folder.$id} value={folder.$id} className="flex items-center w-full gap-3">
+                                        📁 {"   "}
+                                        <span>{folder.folderName}</span>
                                     </option>
                                 ))}
                             </select>

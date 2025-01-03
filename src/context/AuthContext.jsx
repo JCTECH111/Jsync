@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const checkUser = async () => {
     let storedUser;
     try {
-      const userString = localStorage.getItem('user');
+      const userString = userId;
       storedUser = userString;
       if (storedUser) {
         // setUserInformation(storedUser);

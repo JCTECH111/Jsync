@@ -26,14 +26,18 @@ export default function SignIn() {
 
       // Create a new session with email and password
       await account.createEmailPasswordSession(email, password);
-      
+
       // Fetch the user information
       const user = await account.get();
       setUserInformation(user); // Store user information in context
       setUserId(user.$id); // Store user ID in context
-      
-      // Persist user ID in localStorage
-      localStorage.setItem('userId', user.$id);
+
+      // Unset (remove) the current user ID from localStorage
+      localStorage.removeItem('userId');
+
+      // Reassign a new user ID
+      localStorage.setItem('userId', user.$id);  // Replace `newUserId` with the actual user ID you want to set
+
 
       // Show success notification
       Swal.fire({
@@ -42,9 +46,9 @@ export default function SignIn() {
         text: 'Welcome back!',
         timer: 2000,
         showConfirmButton: false,
-      }).then(() =>{
+      }).then(() => {
         // Navigate to the dashboard
-        navigate('/dashboard'); 
+        navigate('/dashboard');
       })
 
     } catch (error) {
@@ -87,8 +91,8 @@ export default function SignIn() {
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="relative w-full py-2 text-white bg-blue-700 rounded-md hover:bg-blue-800 focus:outline-none"
           >
@@ -96,9 +100,9 @@ export default function SignIn() {
           </button>
         </form>
         <p className="mt-6 text-xl text-center text-gray-500">
-      Not Yet Registered? {' '}
-      <Link to="/signup" className="font-semibold text-blue-600 hover:text-blue-500">SignUp</Link>
-    </p>
+          Not Yet Registered? {' '}
+          <Link to="/signup" className="font-semibold text-blue-600 hover:text-blue-500">SignUp</Link>
+        </p>
       </div>
     </div>
   );
