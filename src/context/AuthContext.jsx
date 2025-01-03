@@ -11,11 +11,13 @@ export const AuthProvider = ({ children }) => {
 
   // Simulate checking if the user is logged in
   const checkUser = async () => {
+    let storedUser;
     try {
-      const storedUser = JSON.parse(localStorage.getItem('user')); // Example storage
+      const userString = localStorage.getItem('user');
+      storedUser = userString;
       if (storedUser) {
-        setUserInformation(storedUser);
-        setUserId(storedUser.id);
+        // setUserInformation(storedUser);
+        setUserId(storedUser);
       }
     } catch (error) {
       console.error('Error checking user:', error);

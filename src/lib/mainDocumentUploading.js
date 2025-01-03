@@ -9,7 +9,7 @@ export const registerUploadedFile = async (
     createdAt,
     updatedAt,
     ownerId,
-    folderId = null,
+    folderId,
     isPublic = false,
     Label = '',
     fileSize,
@@ -21,13 +21,11 @@ export const registerUploadedFile = async (
 
         // Step 1: Upload file
         const mainFile = await uploadFile(file, documentId);
-        console.log('Newly uploaded file:', mainFile);
 
-        const fileId = mainFile.$id;
 
         // Step 2: Create metadata
         const mainFileData = await createFileContent(
-            fileId,
+            documentId,
             fileName,
             fileType,
             createdAt,

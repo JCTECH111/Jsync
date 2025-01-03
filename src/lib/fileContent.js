@@ -45,7 +45,7 @@ export const createFileContent = async (
             createdAt,
             updatedAt,
             ownerId,
-            folderId: folderId || null, // Optional field, default to null
+            folderId,
             isPublic,
             Label,
             fileSize,
@@ -76,7 +76,7 @@ export const createFileContent = async (
         console.log('File metadata created successfully:', response);
         return response;
     } catch (error) {
-        console.error('Error creating file metadata:', error.message, error.stack);
+        console.error('Error creating file metadata:', error.message);
         throw error; // Re-throw the error for further handling
     }
 };

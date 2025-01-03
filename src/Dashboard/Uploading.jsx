@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
     DocumentPlusIcon
 } from "@heroicons/react/24/outline";
 import { registerUploadedFile } from "../lib/mainDocumentUploading";
+import { ID } from '../lib/appwrite';
+import getCurrentDate from "../components/currentDate";
 const FileManagementPage = () => {
     const [activeTab, setActiveTab] = useState("upload"); // To toggle forms
     const [isPublic, setIsPublic] = useState(false); // Toggle for file visibility
@@ -12,19 +14,40 @@ const FileManagementPage = () => {
     const [fileSize, setFileSize] = useState('');
     const [label, setLabel] = useState(""); // File label
     const [folderId, setFolderId] = useState(""); // Selected folder
+    const [fileName, setFileName] = useState(""); // Selected folder
     const [fileType, setFileType] = useState(""); // File type
     const [folders, setFolders] = useState([
         { id: "1", name: "Folder 1" },
         { id: "2", name: "Folder 2" },
     ]); // Sample folder data fetched from Appwrite
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const userString = localStorage.getItem('user');
+  const userId  = userString;
+  const showErrorMessage = (message) => {
+    toast.error(message, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+    });
+  };
 
+  const showSuccessMessage = (message) => {
+    toast.success(message, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+    });
+  };
     const getCurrentDateTime = () => {
         const now = new Date();
         return now.toISOString();
     };
+    //getting the current date
+  const currentDate = getCurrentDate();
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
+         setFileName(file.name)
         setSelectedFile(file);
         if (file) {
             // Convert file size to KB or MB
@@ -41,29 +64,54 @@ const FileManagementPage = () => {
         }
     };
 
+    const documentId = ID.unique()
+    
 
+    
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!label || !folder || !selectedFile || !fileType) {
+        if (!label || !folderId || !selectedFile || !fileType) {
             toast.error("Please fill in all fields and upload a file.");
             return;
         }
 
-        // Retrieve all form data
-        const formData = {
-            label,
-            folderId,
-            fileType,
-            isPublic,
-            fileName: selectedFile.name,
-            fileSize,
-            modifiedAt: getCurrentDateTime(),
-        };
+            try {
+                setIsSubmitting(true);
 
-        console.log("Form Data:", formData);
-        toast.success("File uploaded successfully!");
+                await registerUploadedFile(
+                    selectedFile,
+                    documentId,
+                    fileName,
+                    fileType,
+                    currentDate,
+                    currentDate,
+                    userId,
+                    folderId,
+                    isPublic,
+                    label,
+                    fileSize
+                )
+                // const formData = {
+                //     selectedFile,
+                //     documentId,
+                //     fileName,
+                //     fileType,
+                //     currentDate,
+                //     currentDate,
+                //     userId,
+                //     folderId,
+                //     isPublic,
+                //     label,
+                //     fileSize
+                // };
+                console.log(formData)
+            } catch (error) {
+                showErrorMessage("Error uploadng document", error);
+            }
+
+            showSuccessMessage("File uploaded successfully!");
     };
 
     return (
