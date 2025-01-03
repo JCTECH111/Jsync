@@ -9,7 +9,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 
 
-const bucketId = import.meta.env.VITE_APPWRITE_BUCKET_ID;
+const bucketId = import.meta.env.VITE_APPWRITE_BUCKET_USERS_AVATAR;
 export default function SignUp() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [password, setPassword] = useState('');
@@ -185,16 +185,16 @@ async function sendEmailVerification() {
     <ToastContainer />
         {/* Title */}
         <h2 className="text-2xl font-bold text-gray-900">Sign Up</h2>
-        <p className="text-sm text-gray-600 text-center">Fill in your details to create an account</p>
+        <p className="text-sm text-center text-gray-600">Fill in your details to create an account</p>
 
         {/* Profile Picture */}
         <div className="relative flex flex-col items-center">
-          <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+          <div className="flex items-center justify-center w-24 h-24 overflow-hidden bg-gray-200 rounded-full">
             {selectedImage ? (
               <img
                 src={selectedImage}
                 alt="Profile Preview"
-                className="w-full h-full object-cover"
+                className="object-cover w-full h-full"
               />
             ) : (
               <PhotoIcon className="w-12 h-12 text-gray-400" />
@@ -202,7 +202,7 @@ async function sendEmailVerification() {
           </div>
           <label
             htmlFor="profile-pic"
-            className="mt-4 px-4 py-2 bg-blue-600 text-white text-sm rounded-md cursor-pointer hover:bg-blue-500"
+            className="px-4 py-2 mt-4 text-sm text-white bg-blue-600 rounded-md cursor-pointer hover:bg-blue-500"
           >
             Upload Picture
           </label>
@@ -279,13 +279,13 @@ async function sendEmailVerification() {
             {password && (
               <div className="absolute right-3 top-7">
                 {!passwordError ? (
-                  <CheckCircleIcon className="h-5 w-5 text-green-500" />
+                  <CheckCircleIcon className="w-5 h-5 text-green-500" />
                 ) : (
-                  <XCircleIcon className="h-5 w-5 text-red-500" />
+                  <XCircleIcon className="w-5 h-5 text-red-500" />
                 )}
               </div>
             )}
-            {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>}
+            {passwordError && <p className="mt-1 text-sm text-red-500">{passwordError}</p>}
           </div>
 
           {/* Confirm Password */}
@@ -306,18 +306,18 @@ async function sendEmailVerification() {
             {confirmPassword && (
               <div className="absolute right-3 top-7">
                 {isPasswordMatch ? (
-                  <CheckCircleIcon className="h-5 w-5 text-green-500" />
+                  <CheckCircleIcon className="w-5 h-5 text-green-500" />
                 ) : (
-                  <XCircleIcon className="h-5 w-5 text-red-500" />
+                  <XCircleIcon className="w-5 h-5 text-red-500" />
                 )}
               </div>
             )}
-            {!isPasswordMatch && <p className="text-red-500 text-sm">Passwords do not match</p>}
+            {!isPasswordMatch && <p className="text-sm text-red-500">Passwords do not match</p>}
           </div>
         </div>
 
         {/* Buttons */}
-        <div className="w-full flex justify-between items-center space-x-4">
+        <div className="flex items-center justify-between w-full space-x-4">
           <button
             type="button"
             className="w-full py-2 text-sm font-semibold text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-200"
@@ -333,7 +333,7 @@ async function sendEmailVerification() {
       </button>
         </div>
       </form>
-      <p className="mt-6 text-center text-xl text-gray-500">
+      <p className="mt-6 text-xl text-center text-gray-500">
       Already had an account? {' '}
       <Link to="/signin" className="font-semibold text-blue-600 hover:text-blue-500">SignIn</Link>
     </p>
