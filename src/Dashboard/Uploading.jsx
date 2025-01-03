@@ -1,12 +1,13 @@
-import { useState, useContext } from "react";
+import { useState, useEffect } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-    DocumentPlusIcon
-} from "@heroicons/react/24/outline";
+import { DocumentPlusIcon } from "@heroicons/react/24/outline";
 import { registerUploadedFile } from "../lib/mainDocumentUploading";
 import { ID } from '../lib/appwrite';
 import getCurrentDate from "../components/currentDate";
+import { useFetchFolders } from "../lib/fetchFolders";
+import SoundWaveLoader from '../components/SoundWaveLoader';
+import { useNavigate } from 'react-router-dom';
 const FileManagementPage = () => {
     const [activeTab, setActiveTab] = useState("upload"); // To toggle forms
     const [isPublic, setIsPublic] = useState(false); // Toggle for file visibility
@@ -16,38 +17,45 @@ const FileManagementPage = () => {
     const [folderId, setFolderId] = useState(""); // Selected folder
     const [fileName, setFileName] = useState(""); // Selected folder
     const [fileType, setFileType] = useState(""); // File type
-    const [folders, setFolders] = useState([
-        { id: "1", name: "Folder 1" },
-        { id: "2", name: "Folder 2" },
-    ]); // Sample folder data fetched from Appwrite
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const userString = localStorage.getItem('user');
-  const userId  = userString;
-  const showErrorMessage = (message) => {
-    toast.error(message, {
-      position: 'top-right',
-      autoClose: 3000,
-      hideProgressBar: true,
-    });
-  };
+    const [folders, setFolders] = useState([]); // Initialize folders state
+    const fetchedFolders = useFetchFolders(); // Use the custom hook
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    // Update state whenever fetchedFolders changes
+    useEffect(() => {
+        if (fetchedFolders) {
+            setFolders(fetchedFolders);
+        } else {
+            showErrorMessage("no folder found")
+        }
+    }, [fetchedFolders]);
+    const userString = localStorage.getItem('user');
+    const userId = userString;
+    const navigate = useNavigate();
+    const showErrorMessage = (message) => {
+        toast.error(message, {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: true,
+        });
+    };
 
-  const showSuccessMessage = (message) => {
-    toast.success(message, {
-      position: 'top-right',
-      autoClose: 3000,
-      hideProgressBar: true,
-    });
-  };
+    const showSuccessMessage = (message) => {
+        toast.success(message, {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: true,
+        });
+    };
     const getCurrentDateTime = () => {
         const now = new Date();
         return now.toISOString();
     };
     //getting the current date
-  const currentDate = getCurrentDate();
+    const currentDate = getCurrentDate();
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-         setFileName(file.name)
+        setFileName(file.name)
         setSelectedFile(file);
         if (file) {
             // Convert file size to KB or MB
@@ -65,9 +73,9 @@ const FileManagementPage = () => {
     };
 
     const documentId = ID.unique()
-    
 
-    
+
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -77,41 +85,30 @@ const FileManagementPage = () => {
             return;
         }
 
-            try {
-                setIsSubmitting(true);
+        try {
+            setIsSubmitting(true);
 
-                await registerUploadedFile(
-                    selectedFile,
-                    documentId,
-                    fileName,
-                    fileType,
-                    currentDate,
-                    currentDate,
-                    userId,
-                    folderId,
-                    isPublic,
-                    label,
-                    fileSize
-                )
-                // const formData = {
-                //     selectedFile,
-                //     documentId,
-                //     fileName,
-                //     fileType,
-                //     currentDate,
-                //     currentDate,
-                //     userId,
-                //     folderId,
-                //     isPublic,
-                //     label,
-                //     fileSize
-                // };
-                console.log(formData)
-            } catch (error) {
-                showErrorMessage("Error uploadng document", error);
-            }
+            await registerUploadedFile(
+                selectedFile,
+                documentId,
+                fileName,
+                fileType,
+                currentDate,
+                currentDate,
+                isPublic,
+                label,
+                fileSize,
+                folderId,
+                userId,
+            )
+            navigate('/dashboard');
+        } catch (error) {
+            showErrorMessage("Error uploadng document", error);
+        } finally {
+            setIsSubmitting(false);
+        }
 
-            showSuccessMessage("File uploaded successfully!");
+        showSuccessMessage("File uploaded successfully!");
     };
 
     return (
@@ -140,9 +137,10 @@ const FileManagementPage = () => {
 
             {/* Uploading Document Form */}
             {activeTab === "upload" && (
-                <div className="p-1 bg-white rounded-lg shadow-md">
+                <div className={`p-1 bg-white rounded-lg shadow-md ${isSubmitting ? 'cursor-disabled' : 'cursor-pointer'
+                    }`}>
                     <h3 className="mb-4 text-lg font-semibold text-gray-700">Upload File</h3>
-                    <form className="space-y-4" onSubmit={handleSubmit}>
+                    <form className="space-y-4 " onSubmit={handleSubmit}>
                         <div className="flex flex-col">
                             <label className="font-medium text-gray-600">Label</label>
                             <input
@@ -164,11 +162,12 @@ const FileManagementPage = () => {
                             >
                                 <option value="">Select Folder</option>
                                 {folders.map((folder) => (
-                                    <option key={folder.id} value={folder.id}>
-                                        {folder.name}
+                                    <option key={folder.$id} value={folder.$id}>
+                                        {folder.folderName}
                                     </option>
                                 ))}
                             </select>
+
                         </div>
                         <div className="flex flex-col">
                             <label className="font-medium text-gray-600">Modified</label>
@@ -200,6 +199,7 @@ const FileManagementPage = () => {
                             <div className="relative">
                                 <input
                                     type="file"
+                                    name="file"
                                     className="hidden"
                                     id="fileInput"
                                     onChange={handleFileChange}
@@ -312,10 +312,11 @@ const FileManagementPage = () => {
                             </button>
                         </div>
                         <button
+                            disabled={isSubmitting}
                             type="submit"
-                            className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                            className="w-full px-4 py-2 text-white bg-blue-700 rounded-md hover:bg-blue-800"
                         >
-                            Upload File
+                            {isSubmitting ? <SoundWaveLoader /> : 'Upload File'}
                         </button>
                     </form>
                 </div>

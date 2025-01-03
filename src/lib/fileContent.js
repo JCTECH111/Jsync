@@ -25,11 +25,11 @@ export const createFileContent = async (
     fileType,
     createdAt,
     updatedAt,
-    ownerId,
-    folderId,
     isPublic,
     Label,
     fileSize,
+    folderId,
+    ownerId,
 ) => {
     try {
         // Validate inputs
@@ -44,11 +44,11 @@ export const createFileContent = async (
             fileType,
             createdAt,
             updatedAt,
-            ownerId,
-            folderId,
             isPublic,
             Label,
             fileSize,
+            folderId,
+            ownerId,
         };
 
         // Define permissions
