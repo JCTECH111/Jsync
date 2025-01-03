@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
 import { Databases, Query } from "appwrite";
 import { client,  } from "./appwrite";
+import { AuthContext } from '../context/AuthContext';
 
 export const useFetchFolders = () => {
     const DatabaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID
     const folderCollectionId = import.meta.env.VITE_APPWRITE_FOLDERS_ID
     const [folders, setFolders] = useState([]);
-    const storedUser = localStorage.getItem("user");
+    const { userId} = useContext(AuthContext);
+    const storedUser = userId  ;
 
     useEffect(() => {
         const fetchFolders = async () => {
