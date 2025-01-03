@@ -106,7 +106,7 @@ const FileManagement = () => {
           {hasSelectedFiles && (
             <div className="flex items-center space-x-4">
               <button className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
-                Rename
+                Rename  
               </button>
               <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600">
                 Delete
@@ -132,7 +132,7 @@ const FileManagement = () => {
               isChecked
                 ? files
                     .filter((file) => file.folderId === selectedFolder)
-                    .map((file) => file.id)
+                    .map((file) => file.$id)
                 : []
             );
           }}
@@ -149,12 +149,12 @@ const FileManagement = () => {
     {files
       .filter((file) => file.folderId === selectedFolder)
       .map((file) => (
-        <tr key={file.id} className="border-b hover:bg-gray-100">
+        <tr key={file.$id} className="border-b hover:bg-gray-100">
           <td className="px-4 py-2 text-gray-600">
             <input
               type="checkbox"
-              checked={selectedFiles.includes(file.id)}
-              onChange={() => handleCheckboxChange(file.id)}
+              checked={selectedFiles.includes(file.$id)}
+              onChange={() => handleCheckboxChange(file.$id)}
             />
           </td>
           <td className="px-4 py-2 text-gray-600">{file.fileName}</td>
