@@ -1,19 +1,38 @@
 import React, { useState } from "react";
 import { useFetchFolders } from "../lib/fetchFolders";
 import { useFetchFiles } from "../lib/fetchFiles";
+import { downloadUrl } from "../lib/download";
+import { viewUrl } from "../lib/viewFile";
+import { deleteFile } from "../lib/deleteFile";
+import { ToastContainer, toast } from 'react-toastify';
 const FileManagement = () => {
   const [openFolders, setOpenFolders] = useState({}); // Tracks open/closed state of folders
   const [selectedFolder, setSelectedFolder] = useState(null); // Tracks the currently selected folder
   const [selectedFiles, setSelectedFiles] = useState([]); // Tracks selected file IDs
   const fetchedFolders = useFetchFolders(); // Use the custom hook
   const fetchedFiles = useFetchFiles(); // Use the custom hook
+  const fileBucketID = import.meta.env.VITE_APPWRITE_BUCKET_USERS_UPLOAD_DOCUMENT;
   // Folder structure and files
   const folderStructure = fetchedFolders
   const fileStructure = fetchedFiles
   console.log(fileStructure)
 
   const files = fileStructure
+  const showErrorMessage = (message) => {
+    toast.error(message, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+    });
+  };
 
+  const showSuccessMessage = (message) => {
+    toast.success(message, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+    });
+  };
   // Toggle folder open/close state
   const toggleFolder = (id) => {
     setOpenFolders((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -21,7 +40,7 @@ const FileManagement = () => {
 
   // Fetch child folders dynamically based on parentId
   const getChildren = (parentId) => {
-    return folderStructure.filter((folder) => folder.parentId === parentId);
+    return folderStructure.filter((folder) => folder.parentFolderId === parentId);
   };
 
   // Handle folder click to display its files
@@ -85,6 +104,74 @@ const FileManagement = () => {
   // Check if any files are selected
   const hasSelectedFiles = selectedFiles.length > 0;
 
+  const handleDownload = async () => {
+    if (selectedFiles.length === 0) {
+      alert("No files selected for download.");
+      return;
+    }
+
+    try {
+      for (const fileId of selectedFiles) {
+        const url = await downloadUrl(fileBucketID, fileId);
+        // Create a download link for each file
+        const link = document.createElement("a");
+        // console.log(url)
+        link.href = url;
+        link.target = "_blank";
+        link.download = ""; // Set a filename if needed
+        link.click();
+      }
+    } catch (error) {
+      alert("Failed to download one or more files. Please try again.", error);
+    }
+  };
+  const handleView = async (bucketId, fileId) => {
+    try {
+      const url = await viewUrl(bucketId, fileId);
+      console.log("View URL:", url);
+
+      // Open the URL in a new tab
+      window.open(url, "_blank");
+    } catch (error) {
+      alert("Failed to view the file. Please try again.");
+    }
+  };
+  const handleDelete = async () => {
+    if (selectedFiles.length === 0) {
+      showErrorMessage("Please select at least one file to delete.");
+      return;
+    }
+  
+    try {
+      // Loop through all selected files and delete them
+      for (const fileId of selectedFiles) {
+        await deleteFile(fileBucketID, fileId); // Call the delete function
+      }
+  
+      showSuccessMessage("Selected files deleted successfully.")
+  
+      // Clear selected files after deletion
+      setSelectedFiles([]);
+    } catch (error) {
+      showErrorMessage("Failed to delete files. Please try again.");
+      console.error("Delete Error:", error);
+    }
+  };
+  
+  const handleButtonClick = () => {
+    if (selectedFiles.length === 1) {
+      handleView(fileBucketID, selectedFiles[0]); // Pass the single file ID
+    } else if (selectedFiles.length === 0) {
+      showErrorMessage("Please select a document to view.")
+    } else {
+      showErrorMessage("Please select only one document to view.")
+      }
+    }
+  
+  
+
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 lg:flex-row">
       {/* Sidebar */}
@@ -96,7 +183,7 @@ const FileManagement = () => {
             .map((folder) => renderFolder(folder))}
         </ul>
       </aside>
-
+      <ToastContainer />
       {/* Main Section */}
       <main className="flex-1 p-4">
         <div className="flex flex-col items-center justify-between gap-3 lg:flex-row">
@@ -106,77 +193,88 @@ const FileManagement = () => {
           {hasSelectedFiles && (
             <div className="flex items-center space-x-4">
               <button className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
-                Rename  
+                Rename
               </button>
-              <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600">
+              <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
+                      onClick={handleDelete}>
                 Delete
               </button>
-              <button className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600">
+              <button
+                className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                onClick={handleDownload}
+              >
                 Download
               </button>
+              <button
+                className="px-4 py-2 text-white bg-yellow-500 rounded hover:bg-yellow-600"
+                onClick={handleButtonClick} // Pass appropriate IDs
+              >
+                View
+              </button>
+
+
             </div>
           )}
         </div>
 
         <div className="mt-4 overflow-x-auto rounded-lg">
-        <table className="min-w-full bg-white border">
-  <thead>
-    <tr className="text-left bg-gray-200">
-      <th className="px-4 py-2 font-medium text-gray-500">
-        {/* Header checkbox for "select all" */}
-        <input
-          type="checkbox"
-          onChange={(e) => {
-            const isChecked = e.target.checked;
-            setSelectedFiles(
-              isChecked
-                ? files
-                    .filter((file) => file.folderId === selectedFolder)
-                    .map((file) => file.$id)
-                : []
-            );
-          }}
-        />
-      </th>
-      <th className="px-4 py-2 font-medium text-gray-500">Name</th>
-      <th className="px-4 py-2 font-medium text-gray-500">Size</th>
-      <th className="px-4 py-2 font-medium text-gray-500">Modified</th>
-      <th className="px-4 py-2 font-medium text-gray-500">Label</th>
-      <th className="px-4 py-2 font-medium text-gray-500">Members</th>
-    </tr>
-  </thead>
-  <tbody>
-    {files
-      .filter((file) => file.folderId === selectedFolder)
-      .map((file) => (
-        <tr key={file.$id} className="border-b hover:bg-gray-100">
-          <td className="px-4 py-2 text-gray-600">
-            <input
-              type="checkbox"
-              checked={selectedFiles.includes(file.$id)}
-              onChange={() => handleCheckboxChange(file.$id)}
-            />
-          </td>
-          <td className="px-4 py-2 text-gray-600">{file.fileName}</td>
-          <td className="px-4 py-2 text-gray-600">{file.fileSize}</td>
-          <td className="px-4 py-2 text-gray-600">{file.updatedAt}</td>
-          <td className="px-4 py-2 text-gray-600">
-            {file.Label ? (
-              <span className="px-2 py-1 text-sm text-white bg-blue-500 rounded">
-                {file.Label}
-              </span>
-            ) : (
-              "-"
-            )}
-          </td>
-          <td className="px-4 py-2 text-gray-600">
-            {file.members} members
-          </td>
-        </tr>
-      ))}
-  </tbody>
-</table>
-
+          <table className="min-w-full bg-white border">
+            <thead>
+              <tr className="text-left bg-gray-200">
+                <th className="px-4 py-2 font-medium text-gray-500">
+                  {/* Header checkbox for "select all" */}
+                  <input
+                    type="checkbox"
+                    onChange={(e) => {
+                      const isChecked = e.target.checked;
+                      setSelectedFiles(
+                        isChecked
+                          ? files
+                            .filter((file) => file.folderId === selectedFolder)
+                            .map((file) => file.$id)
+                          : []
+                      );
+                    }}
+                  />
+                </th>
+                <th className="px-4 py-2 font-medium text-gray-500">Name</th>
+                <th className="px-4 py-2 font-medium text-gray-500">Size</th>
+                <th className="px-4 py-2 font-medium text-gray-500">Modified</th>
+                <th className="px-4 py-2 font-medium text-gray-500">Label</th>
+                <th className="px-4 py-2 font-medium text-gray-500">Members</th>
+              </tr>
+            </thead>
+            <tbody>
+              {files
+                .filter((file) => file.folderId === selectedFolder)
+                .map((file) => (
+                  <tr key={file.$id} className="border-b hover:bg-gray-100">
+                    <td className="px-4 py-2 text-gray-600">
+                      <input
+                        type="checkbox"
+                        checked={selectedFiles.includes(file.$id)}
+                        onChange={() => handleCheckboxChange(file.$id)}
+                      />
+                    </td>
+                    <td className="px-4 py-2 text-gray-600">{file.fileName}</td>
+                    <td className="px-4 py-2 text-gray-600">{file.fileSize}</td>
+                    <td className="px-4 py-2 text-gray-600">{file.updatedAt}</td>
+                    <td className="px-4 py-2 text-gray-600">
+                      {file.Label ? (
+                        <span className="px-2 py-1 text-sm text-white bg-blue-500 rounded">
+                          {file.Label}
+                        </span>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600">
+                      {file.members} members
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
         </div>
       </main>
     </div>
