@@ -115,7 +115,7 @@ const FileManagementPage = () => {
                 timer: 2000,
                 showConfirmButton: false,
             }).then(() => {
-                navigate('/dashboard');
+                navigate('/dashboard/files');
             })
         } catch (error) {
             showErrorMessage("Error uploadng document", error);

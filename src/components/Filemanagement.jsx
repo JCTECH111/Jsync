@@ -1,23 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFetchFolders } from "../lib/fetchFolders";
 import { useFetchFiles } from "../lib/fetchFiles";
 import { downloadUrl } from "../lib/download";
 import { viewUrl } from "../lib/viewFile";
-import { deleteFile } from "../lib/deleteFile";
+import { deleteFileWithMetadata } from "../lib/deleteFile";
 import { ToastContainer, toast } from 'react-toastify';
 const FileManagement = () => {
   const [openFolders, setOpenFolders] = useState({}); // Tracks open/closed state of folders
   const [selectedFolder, setSelectedFolder] = useState(null); // Tracks the currently selected folder
   const [selectedFiles, setSelectedFiles] = useState([]); // Tracks selected file IDs
+  const [files, setFiles] = useState([]); 
   const fetchedFolders = useFetchFolders(); // Use the custom hook
   const fetchedFiles = useFetchFiles(); // Use the custom hook
   const fileBucketID = import.meta.env.VITE_APPWRITE_BUCKET_USERS_UPLOAD_DOCUMENT;
+  const fileColectionId = import.meta.env.VITE_APPWRITE_FILES_ID;
+  const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID
   // Folder structure and files
   const folderStructure = fetchedFolders
-  const fileStructure = fetchedFiles
-  console.log(fileStructure)
+  // const fileStructure = fetchedFiles
+  // console.log(fileStructure)
 
-  const files = fileStructure
+  // const files = fileStructure
+  useEffect(() => {
+    setFiles(fetchedFiles); // Update the state with the new files list
+  }, [fetchedFiles]);
+  const fetchFiles = async () => {
+    try {
+      // Re-fetch the files from the server (or use your existing `useFetchFiles` hook to get updated files)
+      const files = await fetchedFiles;
+      // Update the file list after the operation
+      setFiles(files);
+    } catch (error) {
+      console.error("Error fetching files:", error);
+    }
+  };
+  
   const showErrorMessage = (message) => {
     toast.error(message, {
       position: 'top-right',
@@ -141,15 +158,16 @@ const FileManagement = () => {
       showErrorMessage("Please select at least one file to delete.");
       return;
     }
-  
+
     try {
       // Loop through all selected files and delete them
       for (const fileId of selectedFiles) {
-        await deleteFile(fileBucketID, fileId); // Call the delete function
+        await deleteFileWithMetadata(fileBucketID, fileId,databaseId, fileColectionId); // Call the delete function
       }
-  
+
       showSuccessMessage("Selected files deleted successfully.")
-  
+      // / Refresh the files after deletion
+      setFiles((prevFiles) => prevFiles.filter(file => !selectedFiles.includes(file.$id)));
       // Clear selected files after deletion
       setSelectedFiles([]);
     } catch (error) {
@@ -157,7 +175,7 @@ const FileManagement = () => {
       console.error("Delete Error:", error);
     }
   };
-  
+
   const handleButtonClick = () => {
     if (selectedFiles.length === 1) {
       handleView(fileBucketID, selectedFiles[0]); // Pass the single file ID
@@ -165,15 +183,15 @@ const FileManagement = () => {
       showErrorMessage("Please select a document to view.")
     } else {
       showErrorMessage("Please select only one document to view.")
-      }
     }
-  
-  
+  }
+
+
 
 
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 lg:flex-row">
+    <div className="flex flex-col w-full min-h-screen bg-gray-100 lg:flex-row">
       {/* Sidebar */}
       <aside className="p-4 bg-white shadow-md lg:w-1/4">
         <h2 className="mb-4 text-xl font-bold text-gray-700">My Folders</h2>
@@ -185,18 +203,15 @@ const FileManagement = () => {
       </aside>
       <ToastContainer />
       {/* Main Section */}
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-4 overflow-x-auto">
         <div className="flex flex-col items-center justify-between gap-3 lg:flex-row">
           <h2 className="text-xl font-bold text-gray-700">Folder Contents</h2>
 
           {/* Actions displayed when files are selected */}
           {hasSelectedFiles && (
             <div className="flex items-center space-x-4">
-              <button className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
-                Rename
-              </button>
               <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
-                      onClick={handleDelete}>
+                onClick={handleDelete}>
                 Delete
               </button>
               <button
