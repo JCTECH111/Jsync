@@ -186,10 +186,11 @@ const FileManagementPage = () => {
 
                         </div>
                         <div className="flex flex-col">
-                            <label className="font-medium text-gray-600">Modified</label>
+                            {/* <label className="font-medium text-gray-600">Modified</label> */}
                             <input
                                 type="text"
                                 value={getCurrentDateTime()}
+                                hidden
                                 className="p-2 mt-1 bg-gray-100 border border-gray-300 rounded-md"
                                 readOnly
                             />
@@ -326,6 +327,7 @@ const FileManagementPage = () => {
                                         } transition`}
                                 ></div>
                             </button>
+                            <p className="text-xs text-gray-500">If File is set Public it would be visible to the Public.</p>
                         </div>
                         <button
                             disabled={isSubmitting}
@@ -343,9 +345,6 @@ const FileManagementPage = () => {
                 <div className="p-1 bg-white rounded-lg shadow-md">
                     <h3 className="mb-4 text-lg font-semibold text-gray-700">Create Folder</h3>
                     <form className="space-y-4">
-                        <input type="hidden" name="ownerId" value="user123" />
-                        <input type="hidden" name="createdAt" value={getCurrentDateTime()} />
-                        <input type="hidden" name="updatedAt" value={getCurrentDateTime()} />
                         <div className="flex flex-col">
                             <label className="font-medium text-gray-600">Folder Name</label>
                             <input
@@ -356,24 +355,23 @@ const FileManagementPage = () => {
                             />
                         </div>
                         <input type="hidden" name="ownerId" value="hidden-owner-id" />
-                        <div className="flex flex-col">
-                            <label className="font-medium text-gray-600">Created At</label>
                             <input
                                 type="text"
+                                value={getCurrentDateTime()}
+                                hidden
+                                name="createdAt"
+                                className="p-2 mt-1 bg-gray-100 border border-gray-300 rounded-md"
+                                readOnly
+                            />
+                        
+                            <input
+                                type="text"
+                                name="updatedAt"
+                                hidden
                                 value={getCurrentDateTime()}
                                 className="p-2 mt-1 bg-gray-100 border border-gray-300 rounded-md"
                                 readOnly
                             />
-                        </div>
-                        <div className="flex flex-col">
-                            <label className="font-medium text-gray-600">Updated At</label>
-                            <input
-                                type="text"
-                                value={getCurrentDateTime()}
-                                className="p-2 mt-1 bg-gray-100 border border-gray-300 rounded-md"
-                                readOnly
-                            />
-                        </div>
                         <div className="flex flex-col">
                             <label className="font-medium text-gray-600">Parent Folder</label>
                             <select

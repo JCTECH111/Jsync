@@ -24,16 +24,16 @@ const FileManagement = () => {
   useEffect(() => {
     setFiles(fetchedFiles); // Update the state with the new files list
   }, [fetchedFiles]);
-  const fetchFiles = async () => {
-    try {
-      // Re-fetch the files from the server (or use your existing `useFetchFiles` hook to get updated files)
-      const files = await fetchedFiles;
-      // Update the file list after the operation
-      setFiles(files);
-    } catch (error) {
-      console.error("Error fetching files:", error);
-    }
-  };
+  // const fetchFiles = async () => {
+  //   try {
+  //     // Re-fetch the files from the server (or use your existing `useFetchFiles` hook to get updated files)
+  //     const files = await fetchedFiles;
+  //     // Update the file list after the operation
+  //     setFiles(files);
+  //   } catch (error) {
+  //     console.error("Error fetching files:", error);
+  //   }
+  // };
   
   const showErrorMessage = (message) => {
     toast.error(message, {
@@ -49,7 +49,7 @@ const FileManagement = () => {
       autoClose: 3000,
       hideProgressBar: true,
     });
-  };
+  }; 
   // Toggle folder open/close state
   const toggleFolder = (id) => {
     setOpenFolders((prev) => ({ ...prev, [id]: !prev[id] }));
