@@ -65,7 +65,7 @@ export const useFetchFiles = () => {
                     console.log("Files with metadata:", validFiles);
                 }
             } catch (error) {
-                toast.error("Failed to load files.");
+                toast.error("Network error: Failed to load files.");
                 console.error("Error fetching files:", error);
                 setFiles([]); // Ensure an empty array is set on error
             }

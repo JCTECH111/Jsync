@@ -32,14 +32,14 @@ export const useFetchFolders = () => {
                 );
                 
                 if (response.documents.length === 0) {
-                    console.warn("No folders found for the user.");
+                    toast.error("No folders found for the user.");
                     setFolders([]); // Return an empty array if no folders are found
                 } else {
                     setFolders(response.documents);
                 }
                 console.log("Querying with ownerId:", storedUser);
             } catch (error) {
-                toast.error("Failed to load folders.");
+                toast.error("Network error: Failed to load folders.");
                 console.error("Error fetching folders:", error);
                 setFolders([]);
             }
