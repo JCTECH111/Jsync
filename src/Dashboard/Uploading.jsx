@@ -10,6 +10,7 @@ import SoundWaveLoader from '../components/SoundWaveLoader';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../context/AuthContext';
+import FolderComponent from "./folderComponents";
 import {
     FolderOpenIcon
   } from "@heroicons/react/24/outline";
@@ -179,7 +180,7 @@ const FileManagementPage = () => {
                                 {folders.map((folder) => (
                                     <option key={folder.$id} value={folder.$id} className="flex items-center w-full gap-3">
                                         📁 {"   "}
-                                        <span>{folder.folderName}</span>
+                                        {folder.folderName}
                                     </option>
                                 ))}
                             </select>
@@ -342,58 +343,7 @@ const FileManagementPage = () => {
 
             {/* Create Folder Form */}
             {activeTab === "folder" && (
-                <div className="p-1 bg-white rounded-lg shadow-md">
-                    <h3 className="mb-4 text-lg font-semibold text-gray-700">Create Folder</h3>
-                    <form className="space-y-4">
-                        <div className="flex flex-col">
-                            <label className="font-medium text-gray-600">Folder Name</label>
-                            <input
-                                type="text"
-                                className="p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                placeholder="Enter folder name"
-                                required
-                            />
-                        </div>
-                        <input type="hidden" name="ownerId" value="hidden-owner-id" />
-                            <input
-                                type="text"
-                                value={getCurrentDateTime()}
-                                hidden
-                                name="createdAt"
-                                className="p-2 mt-1 bg-gray-100 border border-gray-300 rounded-md"
-                                readOnly
-                            />
-                        
-                            <input
-                                type="text"
-                                name="updatedAt"
-                                hidden
-                                value={getCurrentDateTime()}
-                                className="p-2 mt-1 bg-gray-100 border border-gray-300 rounded-md"
-                                readOnly
-                            />
-                        <div className="flex flex-col">
-                            <label className="font-medium text-gray-600">Parent Folder</label>
-                            <select
-                                className="p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                                required
-                            >
-                                <option value="">Select Parent Folder</option>
-                                {folders.map((folder) => (
-                                    <option key={folder.id} value={folder.id}>
-                                        {folder.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <button
-                            type="submit"
-                            className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-                        >
-                            Create Folder
-                        </button>
-                    </form>
-                </div>
+                <FolderComponent />
             )}
             <ToastContainer />
         </div>
@@ -401,3 +351,4 @@ const FileManagementPage = () => {
 };
 
 export default FileManagementPage;
+
