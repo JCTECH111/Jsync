@@ -315,7 +315,7 @@ const FileManagementPage = () => {
                             <p className="text-xs text-gray-500">File size is automatically calculated after upload.</p>
                         </div>
 
-                        <div className="flex items-center space-x-3">
+                        <div className="flex lg:flex-row flex-col gap-2  space-x-3">
                             <label className="font-medium text-gray-600">Is Public</label>
                             <button
                                 type="button"
