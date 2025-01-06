@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useFetchFolders } from "../lib/fetchFolders";
 import { FolderIcon, FolderOpenIcon, PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { deleteDocumentFromDatabase } from "../lib/deleteDocument";
 
 const FolderComponent = () => {
     const fetchedFolders = useFetchFolders(); // Use the custom hook
@@ -10,6 +11,8 @@ const FolderComponent = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalAction, setModalAction] = useState(""); // "create" or "rename"
     const [selectedFolder, setSelectedFolder] = useState(null); // Folder being renamed
+    const folderCollectionId = import.meta.env.VITE_APPWRITE_FOLDERS_ID;
+  const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID
     
 
     useEffect(() => {
@@ -38,9 +41,11 @@ const FolderComponent = () => {
         setIsModalOpen(false);
     };
 
-    const handleDeleteFolder = (folderId) => {
-        const folderName = folders.find((folder) => folder.$id === folderId)?.folderName;
-
+    const handleDeleteFolder = async (folderId) => {
+        const folder = folders.find((folder) => folder.$id === folderId);
+        const folderName = folder?.folderName || "this folder";
+    
+        // Display the confirmation dialog
         Swal.fire({
             title: `Delete "${folderName}"?`,
             text: "Deleting this folder will also delete all its subfolders and contents. This action cannot be undone.",
@@ -50,23 +55,36 @@ const FolderComponent = () => {
             cancelButtonColor: "#3085d6",
             confirmButtonText: "Yes, delete it!",
             cancelButtonText: "Cancel",
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                const deleteRecursive = (id) => {
-                    const children = folders.filter((folder) => folder.parentFolderId === id);
-                    children.forEach((child) => deleteRecursive(child.$id));
-                    setFolders((prev) => prev.filter((folder) => folder.$id !== id));
-                };
-
-                deleteRecursive(folderId);
-                Swal.fire(
-                    "Deleted!",
-                    `The folder "${folderName}" and all its subfolders have been deleted.`,
-                    "success"
-                );
+                try {
+                    // Call the delete function and await its completion
+                    await deleteDocumentFromDatabase(databaseId, folderCollectionId, folderId);
+    
+                    // Optionally, update the folders state to reflect deletion
+                    setFolders((prev) =>
+                        prev.filter((currentFolder) => currentFolder.$id !== folderId)
+                    );
+    
+                    // Notify the user of successful deletion
+                    Swal.fire(
+                        "Deleted!",
+                        `The folder "${folderName}" and all its subfolders have been deleted.`,
+                        "success"
+                    );
+                } catch (error) {
+                    // Notify the user if an error occurs
+                    Swal.fire(
+                        "Error",
+                        `An error occurred while deleting "${folderName}". Please try again.`,
+                        "error"
+                    );
+                    console.error("Error deleting folder:", error);
+                }
             }
         });
     };
+    
 
 
     return (
