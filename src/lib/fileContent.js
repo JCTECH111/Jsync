@@ -1,5 +1,5 @@
 import { Databases, Permission, Role } from 'appwrite';
-import { client } from './appwrite';
+import { client} from './appwrite';
 
 const databases = new Databases(client);
 const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID;

@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Swal from "sweetalert2";
 import { useFetchFolders } from "../lib/fetchFolders";
 import { FolderIcon, FolderOpenIcon, PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { deleteDocumentFromDatabase } from "../lib/deleteDocument";
+import { renameFolderInDatabase } from "../lib/renameFolder";
+import getCurrentDate from "../components/currentDate";
+import { createFolderInDatabase } from "../lib/createFolder";
+import { AuthContext } from '../context/AuthContext';
 
 const FolderComponent = () => {
+    const { userId } = useContext(AuthContext);
     const fetchedFolders = useFetchFolders(); // Use the custom hook
     const [folders, setFolders] = useState([ ]);
     const [activeParentFolderId, setActiveParentFolderId] = useState(null); // Tracks the clicked parent folder
@@ -13,7 +18,9 @@ const FolderComponent = () => {
     const [selectedFolder, setSelectedFolder] = useState(null); // Folder being renamed
     const folderCollectionId = import.meta.env.VITE_APPWRITE_FOLDERS_ID;
   const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID
-    
+    //getting the current date
+    const currentDate = getCurrentDate();
+    const ownerId = userId;
 
     useEffect(() => {
         if (fetchedFolders) {
@@ -23,23 +30,78 @@ const FolderComponent = () => {
         }
     }, [fetchedFolders]);
 
-    const handleCreateFolder = (folderName, parentFolderId = null) => {
-        const newFolder = {
-            $id: Date.now(),
-            folderName: folderName,
-            parentFolderId: parentFolderId,
-        };
-        setFolders([...folders, newFolder]);
-        setIsModalOpen(false);
-    };
+    const handleCreateFolder = async (folderName, parentFolderId = null) => {
+        const currentDate = new Date().toISOString(); // Create the current date here
+        try {
+          const newFolder = await createFolderInDatabase(
+            databaseId,
+            folderCollectionId,
+            ownerId,
+            folderName,
+            currentDate,
+            currentDate, // Use currentDate for both createdAt and updatedAt
+            parentFolderId
+          );
+          
+          // Show success alert
+          Swal.fire({
+            title: "Folder Created!",
+            text: `The folder "${folderName}" has been created successfully.`,
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+      
+          // Optionally, update the state with the new folder data (e.g., add to folder list)
+          setFolders([...folders, newFolder]);
+      
+        } catch (error) {
+          console.error("Error creating folder:", error);
+      
+          // Show error alert
+          Swal.fire({
+            title: "Error!",
+            text: "There was an issue creating the folder. Please try again.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        }
+        setIsModalOpen(false); // Close modal after creating the folder
+      };
 
-    const handleRenameFolder = (folderId, newName) => {
-        const updatedFolders = folders.map((folder) =>
-            folder.$id === folderId ? { ...folder, folderName: newName } : folder
-        );
-        setFolders(updatedFolders);
-        setIsModalOpen(false);
-    };
+    const handleRenameFolder = async (folderId, newFolderName) => {
+        try {
+          const updatedFolder = await renameFolderInDatabase(
+            databaseId,
+            folderCollectionId,
+            folderId,
+            newFolderName,
+            currentDate
+          );
+      
+          // Update state or UI with the renamed folder
+          setFolders((prevFolders) =>
+            prevFolders.map((folder) =>
+              folder.$id === folderId ? { ...folder, folderName: newFolderName } : folder
+            )
+          );
+      
+          Swal.fire(
+            "Renamed!",
+            `The folder has been renamed to "${newFolderName}".`,
+            "success"
+          );
+        } catch (error) {
+          Swal.fire(
+            "Error",
+            "An error occurred while renaming the folder. Please try again.",
+            "error"
+          );
+          console.error("Error renaming folder:", error);
+        } finally{
+            setIsModalOpen(false);
+        }
+      };
+      
 
     const handleDeleteFolder = async (folderId) => {
         const folder = folders.find((folder) => folder.$id === folderId);
