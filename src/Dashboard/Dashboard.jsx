@@ -23,6 +23,7 @@ import Search from './Search';
 import Settings from './Settings';
 import StorageOverview from '../components/StorageOverview';
 import FileManagementPage from './Uploading';
+import FileList from './fileList';
 
 
 const Dashboard = () => {
@@ -133,6 +134,7 @@ const Dashboard = () => {
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/files" element={<Files />} />
+            <Route path="/files/:fileType" element={<FileList />} />
             <Route path="/activities" element={<ActivitiesPage />} />
             <Route path="/bookmarked" element={<Bookmarked />} />
             <Route path="/search" element={<Search />} />

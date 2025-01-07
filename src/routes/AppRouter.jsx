@@ -10,6 +10,7 @@ import ProtectedRoute from './ProtectedRoute';
 import Home from '../landing/Home';
 import Verify from '../Auth/Verify';
 
+
 export default function AppRouter() {
   return (
     <Router>
