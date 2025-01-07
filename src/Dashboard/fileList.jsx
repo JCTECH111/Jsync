@@ -145,7 +145,11 @@ const FileList = () => {
               </td>
               <td className="px-4 py-2 border">{file.fileName}</td>
               <td className="px-4 py-2 border">{file.fileSize} MB</td>
-              <td className="px-4 py-2 border">{new Date(file.dateUploaded).toLocaleDateString()}</td>
+              <td className="px-4 py-2 border">
+  {new Date(file.createdAt).toLocaleDateString()}{" "}
+  {new Date(file.createdAt).toLocaleTimeString()}
+</td>
+
             </tr>
           ))}
         </tbody>

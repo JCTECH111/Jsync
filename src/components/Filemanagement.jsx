@@ -12,7 +12,7 @@ const FileManagement = () => {
   const [openFolders, setOpenFolders] = useState({}); // Tracks open/closed state of folders
   const [selectedFolder, setSelectedFolder] = useState(null); // Tracks the currently selected folder
   const [selectedFiles, setSelectedFiles] = useState([]); // Tracks selected file IDs
-  const [files, setFiles] = useState([]); 
+  const [files, setFiles] = useState([]);
   const fetchedFolders = useFetchFolders(); // Use the custom hook
   const fetchedFiles = useFetchFiles(); // Use the custom hook
   const fileBucketID = import.meta.env.VITE_APPWRITE_BUCKET_USERS_UPLOAD_DOCUMENT;
@@ -37,7 +37,7 @@ const FileManagement = () => {
   //     console.error("Error fetching files:", error);
   //   }
   // };
-  
+
   const showErrorMessage = (message) => {
     toast.error(message, {
       position: 'top-right',
@@ -52,7 +52,7 @@ const FileManagement = () => {
       autoClose: 3000,
       hideProgressBar: true,
     });
-  }; 
+  };
   // Toggle folder open/close state
   const toggleFolder = (id) => {
     setOpenFolders((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -143,10 +143,10 @@ const FileManagement = () => {
       }
 
       const now = new Date();
-    const month = now.toLocaleString("default", { month: "short" });
-    const year = now.getFullYear();
+      const month = now.toLocaleString("default", { month: "short" });
+      const year = now.getFullYear();
 
-    await updateUserActivity(userId, month, year, "downloads", 1);
+      await updateUserActivity(userId, month, year, "downloads", 1);
     } catch (error) {
       alert("Failed to download one or more files. Please try again.", error);
     }
@@ -171,7 +171,7 @@ const FileManagement = () => {
     try {
       // Loop through all selected files and delete them
       for (const fileId of selectedFiles) {
-        await deleteFileWithMetadata(fileBucketID, fileId,databaseId, fileColectionId); // Call the delete function
+        await deleteFileWithMetadata(fileBucketID, fileId, databaseId, fileColectionId); // Call the delete function
       }
 
       showSuccessMessage("Selected files deleted successfully.")
@@ -282,7 +282,11 @@ const FileManagement = () => {
                     </td>
                     <td className="px-4 py-2 text-gray-600">{file.fileName}</td>
                     <td className="px-4 py-2 text-gray-600">{file.fileSize}</td>
-                    <td className="px-4 py-2 text-gray-600">{file.updatedAt}</td>
+                    <td className="px-4 py-2 text-gray-600"><td className="px-4 py-2 border">
+                      {new Date(file.createdAt).toLocaleDateString()}{" "}
+                      {new Date(file.createdAt).toLocaleTimeString()}
+                    </td>
+                    </td>
                     <td className="px-4 py-2 text-gray-600">
                       {file.Label ? (
                         <span className="px-2 py-1 text-sm text-white bg-blue-500 rounded">
