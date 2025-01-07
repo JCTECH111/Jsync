@@ -106,7 +106,7 @@ const FileList = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 overflow-x-scroll">
       <h2 className="mb-4 text-2xl font-bold">{fileType} Files</h2>
       {selectedFiles.length > 0 && (
         <div className="mt-4 mb-4 space-x-2">
