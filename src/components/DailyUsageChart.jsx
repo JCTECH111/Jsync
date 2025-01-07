@@ -1,16 +1,39 @@
-import React from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AuthContext } from '../context/AuthContext';
+import { fetchUserActivities } from '../lib/fetchUserActivities';
 
-const activityData = [
-  { month: 'Jan', uploads: 50, downloads: 30 },
-  { month: 'Feb', uploads: 70, downloads: 60 },
-  { month: 'Mar', uploads: 90, downloads: 85 },
-  { month: 'Apr', uploads: 120, downloads: 100 },
-  { month: 'May', uploads: 80, downloads: 110 },
-  { month: 'Jun', uploads: 95, downloads: 120 },
-];
 
 const ActivityChart = () => {
+  const databaseId =import.meta.env.VITE_APPWRITE_DATABASE_ID; // Replace with your database ID
+const collectionId = import.meta.env.VITE_APPWRITE_CHART_OVERVIEW_DOCUMENT_ID; // cOLLECTION ID
+const [activityData, setActivityData] = useState([]);
+const currentYear = new Date().getFullYear();
+const { userId } = useContext(AuthContext);
+const ownerId = userId; // Replace with the logged-in user's ID
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchUserActivities(databaseId, collectionId, ownerId, currentYear);
+        
+        // Transform the data to match chart format
+        const formattedData = data.map((activity) => ({
+          month: activity.month,
+          uploads: activity.totalUploads,
+          downloads: activity.totalDownloads,
+        }));
+
+        setActivityData(formattedData);
+      } catch (error) {
+        console.error("Error loading activity data:", error);
+      }
+    };
+
+    fetchData();
+  }, [databaseId, collectionId, ownerId, currentYear]);
+
   return (
     <div className="relative w-full h-[400px] mt-6">
     <h1 className='text-xl font-bold text-gray-800'>Daily Usage</h1>

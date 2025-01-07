@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useFetchFolders } from "../lib/fetchFolders";
 import { useFetchFiles } from "../lib/fetchFiles";
 import { downloadUrl } from "../lib/download";
 import { viewUrl } from "../lib/viewFile";
 import { deleteFileWithMetadata } from "../lib/deleteFile";
 import { ToastContainer, toast } from 'react-toastify';
+import { updateUserActivity } from "../lib/updateUserActivities";
+import { AuthContext } from '../context/AuthContext';
 const FileManagement = () => {
+  const { userId } = useContext(AuthContext);
   const [openFolders, setOpenFolders] = useState({}); // Tracks open/closed state of folders
   const [selectedFolder, setSelectedFolder] = useState(null); // Tracks the currently selected folder
   const [selectedFiles, setSelectedFiles] = useState([]); // Tracks selected file IDs
@@ -138,6 +141,12 @@ const FileManagement = () => {
         link.download = ""; // Set a filename if needed
         link.click();
       }
+
+      const now = new Date();
+    const month = now.toLocaleString("default", { month: "short" });
+    const year = now.getFullYear();
+
+    await updateUserActivity(userId, month, year, "downloads", 1);
     } catch (error) {
       alert("Failed to download one or more files. Please try again.", error);
     }

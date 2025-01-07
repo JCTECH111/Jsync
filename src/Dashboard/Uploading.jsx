@@ -11,9 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AuthContext } from '../context/AuthContext';
 import FolderComponent from "./folderComponents";
-import {
-    FolderOpenIcon
-  } from "@heroicons/react/24/outline";
+import { updateUserActivity } from "../lib/updateUserActivities";
 const FileManagementPage = () => {
     const { userId } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState("upload"); // To toggle forms
@@ -108,6 +106,10 @@ const FileManagementPage = () => {
                 folderId,
                 ownerId,
             )
+            const now = new Date(); // Get current date and time
+            const month = now.toLocaleString("default", { month: "short" }); // Get month as 'Jan', 'Feb', etc.
+            const year = now.getFullYear(); // Get the year (e.g., 2025)
+            await updateUserActivity(ownerId, month, year, "uploads", 1); // Increment by 1
             // Show success notification
             Swal.fire({
                 icon: 'success',
@@ -269,11 +271,9 @@ const FileManagementPage = () => {
                                                 src={
                                                     selectedFile.type === "application/pdf"
                                                         ? "https://th.bing.com/th/id/R.e2128f95054df5ef0efcb94e85a6a2aa?rik=ofjTqTITkHDXxw&pid=ImgRaw&r=0"
-                                                        : selectedFile.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-                                                            selectedFile.type === "application/msword"
+                                                        : ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword"].includes(selectedFile.type)
                                                             ? "https://th.bing.com/th/id/OIP.SR8quKEZ4wIqaXyidcIwKwHaEK?pcl=1b1a19&pid=ImgDetMain"
-                                                            : selectedFile.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-                                                                selectedFile.type === "application/vnd.ms-excel"
+                                                            : ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"].includes(selectedFile.type)
                                                                 ? "https://th.bing.com/th/id/OIP.ykK5rw63b4q35gNZMsCwngHaHa?pid=ImgDetMain"
                                                                 : "https://th.bing.com/th/id/OIP.MJ_yOu0kUEbfoBeQU865jgHaHa?pid=ImgDetMain"
                                                 }
@@ -283,18 +283,15 @@ const FileManagementPage = () => {
                                             <p className="mt-2 text-xs text-center text-gray-500">
                                                 {selectedFile.type === "application/pdf"
                                                     ? "PDF File"
-                                                    : selectedFile.type ===
-                                                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-                                                        selectedFile.type === "application/msword"
+                                                    : ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword"].includes(selectedFile.type)
                                                         ? "Word File"
-                                                        : selectedFile.type ===
-                                                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-                                                            selectedFile.type === "application/vnd.ms-excel"
+                                                        : ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"].includes(selectedFile.type)
                                                             ? "Excel File"
                                                             : "Document File"}
                                             </p>
                                         </div>
                                     )}
+
                                 </div>
                             )}
                         </div>
@@ -315,7 +312,7 @@ const FileManagementPage = () => {
                             <p className="text-xs text-gray-500">File size is automatically calculated after upload.</p>
                         </div>
 
-                        <div className="flex lg:flex-row flex-col gap-2  space-x-3">
+                        <div className="flex flex-col gap-2 space-x-3 lg:flex-row">
                             <label className="font-medium text-gray-600">Is Public</label>
                             <button
                                 type="button"
