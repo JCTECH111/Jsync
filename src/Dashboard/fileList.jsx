@@ -124,19 +124,22 @@ const FileList = () => {
           </button>
         </div>
       )}
-      <table className="w-full border-collapse table-auto">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border">Select</th>
-            <th className="px-4 py-2 border">File Name</th>
-            <th className="px-4 py-2 border">Size</th>
-            <th className="px-4 py-2 border">Date Uploaded</th>
+      <div className="bg-white border rounded-lg shadow">
+        <div className="overflow-x-auto">
+      <table className="w-full text-left table-auto">
+        <thead className="">
+          <tr className="bg-gray-100 border-b">
+            <th className="px-6 py-3 text-sm font-medium text-gray-500">Select</th>
+            <th className="px-6 py-3 text-sm font-medium text-gray-500">Select</th>
+            <th className="px-6 py-3 text-sm font-medium text-gray-500">File Name</th>
+            <th className="px-6 py-3 text-sm font-medium text-gray-500">Size</th>
+            <th className="px-6 py-3 text-sm font-medium text-gray-500">Date Uploaded</th>
           </tr>
         </thead>
         <tbody>
           {files.map((file) => (
-            <tr key={file.$id}>
-              <td className="px-4 py-2 text-center border">
+            <tr key={file.$id} className="transition-colors border-b hover:bg-gray-50">
+              <td className="flex items-center px-6 py-4 space-x-3">
                 <input
                   type="checkbox"
                   checked={selectedFiles.includes(file.$id)}
@@ -154,6 +157,8 @@ const FileList = () => {
           ))}
         </tbody>
       </table>
+      </div>
+      </div>
       <ToastContainer />
       
     </div>
