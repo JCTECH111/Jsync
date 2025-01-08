@@ -30,7 +30,7 @@ const RecentFiles = () => {
     image: "bg-purple-100 text-purple-700",
     video: "bg-blue-100 text-blue-700",
     document: "bg-green-100 text-green-700",
-    other: "bg-gray-100 text-gray-700",
+    other: "bg-pink-100 text-pink-700",
   };
 
   const handleDropdown = (index) => {
