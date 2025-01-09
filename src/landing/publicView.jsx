@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import { Databases } from "appwrite";
 import { client } from "../lib/appwrite";
+import SoundWaveLoader from "../components/SoundWaveLoader";
 
 const databases = new Databases(client);
 
@@ -27,7 +28,7 @@ const PublicView = () => {
     fetchFileData();
   }, [id]);
 
-  if (!fileData) return <div>Loading...</div>;
+  if (!fileData) return <div><SoundWaveLoader /></div>;
 
   return (
     <div>
