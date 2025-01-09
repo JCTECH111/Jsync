@@ -22,13 +22,13 @@ const PublicView = () => {
     //   } catch (error) {
     //     console.error("Error fetching file data:", error);
     //   }
-    alert(id)
+
     };
 
     fetchFileData();
   }, [id]);
 
-  if (!fileData) return <div><SoundWaveLoader /></div>;
+  if (!fileData) return <div className="w-full h-screen items-center justify-center"><SoundWaveLoader /></div>;
 
   return (
     <div>
