@@ -57,7 +57,7 @@ const PublicView = () => {
     const ogImage = "https://images.unsplash.com/photo-1562240020-ce31ccb0fa7d?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9";
 
     return (
-        <div>
+        <div className="relative none w-full h-full min-h-screen max-h-screen">
             {/* Meta Tags */}
             <Helmet>
                 <title>Jsync</title>
@@ -74,7 +74,7 @@ const PublicView = () => {
             {/* File Display */}
             <iframe
                 src={`${fileUrl}`}
-                className="w-full h-screen max-w-full max-h-screen  overflow-hidden border-0"
+                className="absolute inset-0 w-1/2 h-1/2 border-0"
             />
 
         </div>
