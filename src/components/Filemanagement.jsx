@@ -7,12 +7,14 @@ import { deleteFileWithMetadata } from "../lib/deleteFile";
 import { ToastContainer, toast } from 'react-toastify';
 import { updateUserActivity } from "../lib/updateUserActivities";
 import { AuthContext } from '../context/AuthContext';
+import SoundWaveLoader from "./SoundWaveLoader";
 const FileManagement = () => {
   const { userId } = useContext(AuthContext);
   const [openFolders, setOpenFolders] = useState({}); // Tracks open/closed state of folders
   const [selectedFolder, setSelectedFolder] = useState(null); // Tracks the currently selected folder
   const [selectedFiles, setSelectedFiles] = useState([]); // Tracks selected file IDs
   const [files, setFiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const fetchedFolders = useFetchFolders(); // Use the custom hook
   const fetchedFiles = useFetchFiles(); // Use the custom hook
   const fileBucketID = import.meta.env.VITE_APPWRITE_BUCKET_USERS_UPLOAD_DOCUMENT;
@@ -25,7 +27,14 @@ const FileManagement = () => {
 
   // const files = fileStructure
   useEffect(() => {
-    setFiles(fetchedFiles); // Update the state with the new files list
+    try {
+      
+      setFiles(fetchedFiles); // Update the state with the new files list
+    } catch (error) {
+         return error
+    } finally {
+      setIsLoading(false)
+    }
   }, [fetchedFiles]);
   // const fetchFiles = async () => {
   //   try {
@@ -65,7 +74,14 @@ const FileManagement = () => {
 
   // Handle folder click to display its files
   const handleFolderClick = (folderId) => {
-    setSelectedFolder(folderId);
+    setIsLoading(true)
+    try {
+      setSelectedFolder(folderId);
+    } catch (error) {
+      console.log(error)
+    } finally{
+      setIsLoading(false)
+    }
   };
 
   // Render folder structure recursively
@@ -269,7 +285,13 @@ const FileManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {files
+            {isLoading ? (
+              <tr>
+                  <td colSpan="6" className="py-4 text-center">
+                    <SoundWaveLoader /> {/* Add your spinner or skeleton loader */}
+                  </td>
+                </tr>
+            ) : files
                 .filter((file) => file.folderId === selectedFolder)
                 .map((file) => (
                   <tr key={file.$id} className="border-b hover:bg-gray-100">
@@ -282,7 +304,7 @@ const FileManagement = () => {
                     </td>
                     <td className="px-4 py-2 text-gray-600">{file.fileName}</td>
                     <td className="px-4 py-2 text-gray-600">{file.fileSize}</td>
-                    <td className="px-4 py-2 text-gray-600"><td className="px-4 py-2 border">
+                    <td className="px-4 py-2 text-gray-600"><td className="px-4 py-2 ">
                       {new Date(file.createdAt).toLocaleDateString()}{" "}
                       {new Date(file.createdAt).toLocaleTimeString()}
                     </td>

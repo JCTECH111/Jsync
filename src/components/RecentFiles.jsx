@@ -3,12 +3,39 @@ import { FolderIcon, DocumentIcon, EllipsisVerticalIcon } from "@heroicons/react
 import { getUserFilesWithMetadata } from "../lib/fetchAndMergeFileData"; // Import the backend function
 import { AuthContext } from '../context/AuthContext';
 import SoundWaveLoader from './SoundWaveLoader'
+import { downloadUrl } from "../lib/download";
+import { deleteFileWithMetadata } from "../lib/deleteFile";
+const fileBucketID = import.meta.env.VITE_APPWRITE_BUCKET_USERS_UPLOAD_DOCUMENT;
+  const fileColectionId = import.meta.env.VITE_APPWRITE_FILES_ID;
+  const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID
+  import { updateUserActivity } from "../lib/updateUserActivities";
+  import { ToastContainer, toast } from 'react-toastify';
+  import ShareModal from "./ShareModal";
 
 const RecentFiles = () => {
+  
   const [files, setFiles] = useState([]);
   const [dropdownIndex, setDropdownIndex] = useState(null);
   const { userId } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [currentFileLink, setCurrentFileLink] = useState("");
+
+  const showErrorMessage = (message) => {
+    toast.error(message, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+    });
+  };
+
+  const showSuccessMessage = (message) => {
+    toast.success(message, {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: true,
+    });
+  };
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -25,6 +52,8 @@ const RecentFiles = () => {
     fetchFiles();
   }, [userId]);
 
+
+
   const tagStyles = {
     music: "bg-yellow-100 text-yellow-700",
     image: "bg-purple-100 text-purple-700",
@@ -36,9 +65,52 @@ const RecentFiles = () => {
   const handleDropdown = (index) => {
     setDropdownIndex(dropdownIndex === index ? null : index);
   };
+  const handleDownload = async (fileId) => {
+    console.log(fileId)
+    try {
+        const url = await downloadUrl(fileBucketID, fileId);
+        // Create a download link for each file
+        const link = document.createElement("a");
+        // console.log(url)
+        link.href = url;
+        link.target = "_blank";
+        link.download = ""; // Set a filename if needed
+        link.click();
+
+
+      const now = new Date();
+      const month = now.toLocaleString("default", { month: "short" });
+      const year = now.getFullYear();
+
+      await updateUserActivity(userId, month, year, "downloads", 1);
+    } catch (error) {
+      alert("Failed to download one or more files. Please try again.", error);
+    }
+  }
+  const handleDelete = async (fileId) => {
+    try {
+        await deleteFileWithMetadata(fileBucketID, fileId, databaseId, fileColectionId); // Call the delete function
+
+
+      showSuccessMessage("Selected files deleted successfully.")
+      // Clear selected files after deletion
+      // / Refresh the files after deletion
+      setFiles((prevFiles) => prevFiles.filter(() => !setFiles.includes(fileId)));
+    } catch (error) {
+      showErrorMessage("Failed to delete files. Please try again.");
+      console.error("Delete Error:", error);
+    }
+  }
+  const handleShare = (fileId) => {
+    console.log(fileId)
+    const fileLink = `https://yourwebsite.com/files/${fileId}`; // Generate your file link
+    setCurrentFileLink(fileLink);
+    setIsShareModalOpen(true);
+  }
 
   return (
     <div className="p-2 mt-5 bg-gray-50">
+    <ToastContainer />
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold">Recent Files</h2>
         <a href="#view-all" className="text-blue-500 hover:underline">
@@ -116,8 +188,25 @@ const RecentFiles = () => {
                       {dropdownIndex === file.$id && (
                         <div className="absolute right-0 z-10 w-48 mt-2 bg-white border rounded-lg shadow-lg">
                           {/* Add Dropdown Actions */}
-                          <button className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100">Action 1</button>
-                          <button className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100">Action 2</button>
+                          <button
+                            className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:text-white hover:bg-blue-600 rounded-xl"
+                            onClick={() => handleDownload(file.$id)}
+                          >
+                            Download
+                          </button>
+                          <button
+                            className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:text-white hover:bg-blue-600 rounded-xl"
+                            onClick={() => handleShare(file.$id)}
+                          >
+                            Share
+                          </button>
+                          <button
+                            className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:text-white hover:bg-blue-600 rounded-xl"
+                            onClick={() => handleDelete(file.$id)}
+                          >
+                            Delete
+                          </button>
+
                         </div>
                       )}
                     </td>
@@ -128,6 +217,12 @@ const RecentFiles = () => {
           </table>
         </div>
       </div>
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        fileLink={currentFileLink}
+      />
     </div>
   );
 };
