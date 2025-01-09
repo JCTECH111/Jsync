@@ -103,7 +103,7 @@ const RecentFiles = () => {
   }
   const handleShare = (fileId) => {
     console.log(fileId)
-    const fileLink = `https://yourwebsite.com/files/${fileId}`; // Generate your file link
+    const fileLink = `https://jsync.vercel.app/view/${fileId}`; // Generate your file link
     setCurrentFileLink(fileLink);
     setIsShareModalOpen(true);
   }

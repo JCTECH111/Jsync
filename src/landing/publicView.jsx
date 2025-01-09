@@ -11,16 +11,17 @@ const PublicView = () => {
 
   useEffect(() => {
     const fetchFileData = async () => {
-      try {
-        const response = await databases.getDocument(
-          "databaseId", // Replace with your Appwrite database ID
-          "collectionId", // Replace with your Appwrite collection ID
-          id
-        );
-        setFileData(response);
-      } catch (error) {
-        console.error("Error fetching file data:", error);
-      }
+    //   try {
+    //     const response = await databases.getDocument(
+    //       "databaseId", // Replace with your Appwrite database ID
+    //       "collectionId", // Replace with your Appwrite collection ID
+    //       id
+    //     );
+    //     setFileData(response);
+    //   } catch (error) {
+    //     console.error("Error fetching file data:", error);
+    //   }
+    alert(id)
     };
 
     fetchFileData();

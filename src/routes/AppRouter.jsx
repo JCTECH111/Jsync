@@ -9,6 +9,7 @@ import HoverInfo from '../components/HoverInfo';
 import ProtectedRoute from './ProtectedRoute';
 import Home from '../landing/Home';
 import Verify from '../Auth/Verify';
+import PublicView from '../landing/publicView.jsx';
 
 
 export default function AppRouter() {
@@ -20,6 +21,7 @@ export default function AppRouter() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify" element={<Verify />} />
+        <Route path="/view/:id" element={<PublicView />} />
         {/* <Route path="/card" element={<FileCards />} /> */}
         {/* <Route path="/login" element={<HoverInfo />} /> */}
 
