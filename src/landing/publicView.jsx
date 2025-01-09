@@ -74,7 +74,7 @@ const PublicView = () => {
       {/* File Display */}
       <iframe
         src={`${fileUrl}`}
-        style={{ width: "100%", height: "500px" }}
+        className="w-full h-screen relative"
       ></iframe>
     </div>
   );
