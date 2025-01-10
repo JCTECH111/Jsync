@@ -48,28 +48,46 @@ const Dashboard = () => {
           </button>
         </div>
         <div className="mt-6 space-y-4">
-          <Link to="/dashboard" className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
+          <Link to="/dashboard" onClick={() => {
+            setSidebarOpen(false);
+            setStorageNav(false);
+          }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <HomeIcon className="w-6 h-6 text-white" />
             <span>Overview</span>
           </Link>
-          <Link to="/dashboard/files" className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
+          <Link to="/dashboard/files" onClick={() => {
+            setSidebarOpen(false);
+            setStorageNav(false);
+          }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <FolderIcon className="w-6 h-6 text-white" />
             <span>Files</span>
           </Link>
-          <Link to="/dashboard/activities" className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
+          <Link to="/dashboard/activities" onClick={() => {
+            setSidebarOpen(false);
+            setStorageNav(false);
+          }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <DocumentTextIcon className="w-6 h-6 text-white" />
             <span>Activities</span>
           </Link>
-          <Link to="/dashboard/bookmarked" className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
+          <Link to="/dashboard/bookmarked" onClick={() => {
+            setSidebarOpen(false);
+            setStorageNav(false);
+          }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <BookmarkIcon className="w-6 h-6 text-white" />
             <span>Bookmarked</span>
           </Link>
-          <Link to="/dashboard/search" className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
+          <Link to="/dashboard/search" onClick={() => {
+            setSidebarOpen(false);
+            setStorageNav(false);
+          }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <MagnifyingGlassIcon className="w-6 h-6 text-white" />
             <span>Search</span>
           </Link>
           <div className="h-12"></div>
-          <Link to="/dashboard/settings" className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
+          <Link to="/dashboard/settings" onClick={() => {
+            setSidebarOpen(false);
+            setStorageNav(false);
+          }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <CogIcon className="w-6 h-6 text-white" />
             <span>Settings</span>
           </Link>
@@ -77,7 +95,7 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col flex-1 overflow-y-auto bg-white">
+      <div className="flex flex-col flex-1 overflow-y-auto bg-white" >
         {/* Navbar */}
         <div className="flex items-center justify-between px-4 py-3 bg-white">
           <button

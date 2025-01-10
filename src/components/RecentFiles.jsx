@@ -85,6 +85,8 @@ const RecentFiles = () => {
       await updateUserActivity(userId, month, year, "downloads", 1);
     } catch (error) {
       alert("Failed to download one or more files. Please try again.", error);
+    } finally {
+      setDropdownIndex(null)
     }
   }
   const handleDelete = async (fileId) => {
@@ -99,6 +101,8 @@ const RecentFiles = () => {
     } catch (error) {
       showErrorMessage("Failed to delete files. Please try again.");
       console.error("Delete Error:", error);
+    }finally{
+      setDropdownIndex(null)
     }
   }
   const handleShare = (fileId) => {
@@ -106,6 +110,7 @@ const RecentFiles = () => {
     const fileLink = `https://jsync.vercel.app/view/${fileId}`; // Generate your file link
     setCurrentFileLink(fileLink);
     setIsShareModalOpen(true);
+      setDropdownIndex(null)
   }
 
   return (
