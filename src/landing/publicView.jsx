@@ -57,7 +57,7 @@ const PublicView = () => {
     const ogImage = "https://images.unsplash.com/photo-1562240020-ce31ccb0fa7d?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9";
 
     return (
-        <div className="relative none w-full h-full flex items-center justify-center min-h-screen max-h-screen">
+        <div className="relative none w-full h-full flex items-center justify-center min-h-screen max-h-screen p-2">
             {/* Meta Tags */}
             <Helmet>
                 <title>Jsync</title>
