@@ -68,7 +68,7 @@ const RecentFiles = () => {
   const handleDownload = async (fileId) => {
     console.log(fileId)
     try {
-        const url = await downloadUrl(fileBucketID, fileId);
+        const url = await downloadUrl(fileBucketID, fileId, userId);
         // Create a download link for each file
         const link = document.createElement("a");
         // console.log(url)
@@ -91,7 +91,7 @@ const RecentFiles = () => {
   }
   const handleDelete = async (fileId) => {
     try {
-        await deleteFileWithMetadata(fileBucketID, fileId, databaseId, fileColectionId); // Call the delete function
+        await deleteFileWithMetadata(fileBucketID, fileId, databaseId, fileColectionId, userId); // Call the delete function
 
 
       showSuccessMessage("Selected files deleted successfully.")

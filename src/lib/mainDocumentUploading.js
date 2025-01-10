@@ -1,6 +1,7 @@
 import { uploadFile } from "./uploadFile";
 import { createFileContent } from "./fileContent";
 import { createFileMetadata } from "./fileMetadata";
+import { saveActivity } from "./saveActivity";
 
 export const registerUploadedFile = async (
     file,
@@ -41,6 +42,15 @@ export const registerUploadedFile = async (
             folderId,
             ownerId,
         );
+        const activity = {
+            ownerId:ownerId ,
+            type: "upload",
+            message: "You uploaded a new document",
+            timeStamp: createdAt,
+            documentName:fileName ,
+          };
+          
+          saveActivity(activity);
         console.log('Uploaded file metadata:', mainFileData);
 
         return { file: mainFile, metadata: mainFileData, sharedData:mainFileMetaData }; // Return both file and metadata

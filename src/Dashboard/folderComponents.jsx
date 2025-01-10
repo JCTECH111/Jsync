@@ -75,7 +75,8 @@ const FolderComponent = () => {
             folderCollectionId,
             folderId,
             newFolderName,
-            currentDate
+            currentDate,
+            userId
           );
       
           // Update state or UI with the renamed folder
@@ -121,7 +122,7 @@ const FolderComponent = () => {
             if (result.isConfirmed) {
                 try {
                     // Call the delete function and await its completion
-                    await deleteDocumentFromDatabase(databaseId, folderCollectionId, folderId);
+                    await deleteDocumentFromDatabase(databaseId, folderCollectionId, folderId, userId);
     
                     // Optionally, update the folders state to reflect deletion
                     setFolders((prev) =>

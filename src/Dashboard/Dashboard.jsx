@@ -1,5 +1,5 @@
 import { Routes, Route, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
   Bars3Icon,
   XMarkIcon,
@@ -24,13 +24,30 @@ import Settings from './Settings';
 import StorageOverview from '../components/StorageOverview';
 import FileManagementPage from './Uploading';
 import FileList from './fileList';
-
-
+import { fetchActivities } from "../lib/fetchActivities"; // Use the function defined earlier
+import { AuthContext } from "../context/AuthContext";
 const Dashboard = () => {
+  const { userId } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false); // For left sidebar
   const [storageNav, setStorageNav] = useState(false); // For right sidebar
   const [notificationOpen, setNotificationOpen] = useState(false); // Notification state
+  const [activities, setActivities] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    setIsLoading(true);
+    try {
+      const loadActivities = async () => {
+        const data = await fetchActivities(userId);
+        setActivities(data);
+      };
+      loadActivities();
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
   return (
     <div className="h-screen w-full grid lg:grid-cols-[15%_65%_20%] grid-cols-1 bg-red-700">
       {/* Sidebar */}
@@ -120,28 +137,31 @@ const Dashboard = () => {
               >
                 <BellIcon className="w-6 h-6 text-gray-700" />
                 {/* Notification Badge */}
-                <span className="absolute top-0 right-0 inline-block w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                {!activities || activities.length === 0 ? (
+                  null // Render nothing if activities is null or empty
+                ) : (
+                  <span className="absolute top-0 right-0 inline-block w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                )}
+
               </button>
               {/* Notification Dropdown */}
               {notificationOpen && (
-                <div className="absolute right-0 w-64 p-4 mt-2 text-black bg-white rounded-lg shadow-lg">
+                <div className="absolute z-20 right-0 w-64 p-4 mt-2 text-black bg-white rounded-lg shadow-lg">
                   <h2 className="text-lg font-semibold">Notifications</h2>
                   <ul className="mt-2 space-y-2 overflow-y-auto max-h-60">
-                    <li className="p-2 bg-gray-100 rounded-md hover:bg-gray-200">
-                      New file uploaded
-                    </li>
-                    <li className="p-2 bg-gray-100 rounded-md hover:bg-gray-200">
-                      System updated successfully
-                    </li>
-                    <li className="p-2 bg-gray-100 rounded-md hover:bg-gray-200">
-                      Profile settings changed
-                    </li>
-                    <li className="p-2 bg-gray-100 rounded-md hover:bg-gray-200">
-                      New comment added
-                    </li>
+                    {activities.slice(0, 5).map((activity) => (
+                      <li
+                        className="p-2 bg-gray-100 rounded-md hover:bg-gray-200"
+                        key={activity.$id}
+                      >
+                        {activity.message}
+                      </li>
+                    ))}
                   </ul>
                   <button className="w-full mt-2 text-sm font-semibold text-blue-600">
-                    View All
+                    <a href='/dashboard/activities'>
+                      View All
+                    </a>
                   </button>
                 </div>
               )}

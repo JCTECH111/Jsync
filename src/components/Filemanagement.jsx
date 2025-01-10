@@ -151,7 +151,7 @@ const FileManagement = () => {
 
     try {
       for (const fileId of selectedFiles) {
-        const url = await downloadUrl(fileBucketID, fileId);
+        const url = await downloadUrl(fileBucketID, fileId, userId);
         // Create a download link for each file
         const link = document.createElement("a");
         // console.log(url)
@@ -190,7 +190,7 @@ const FileManagement = () => {
     try {
       // Loop through all selected files and delete them
       for (const fileId of selectedFiles) {
-        await deleteFileWithMetadata(fileBucketID, fileId, databaseId, fileColectionId); // Call the delete function
+        await deleteFileWithMetadata(fileBucketID, fileId, databaseId, fileColectionId, userId); // Call the delete function
       }
 
       showSuccessMessage("Selected files deleted successfully.")
