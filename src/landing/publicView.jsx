@@ -74,7 +74,7 @@ const PublicView = () => {
             {/* File Display */}
             <iframe
                 src={`${fileUrl}`}
-                className="absolute inset-0 w-[75%] h-[75%] border-0"
+                className="absolute inset-0 w-full h-full border-0"
             />
 
         </div>
