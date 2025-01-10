@@ -20,8 +20,9 @@ export const getUserFilesWithMetadata = async (userId) => {
       console.warn("No files found for the user.");
       return []; // Return early if no files found
     }
+    //step 2: filter the output and get the values that their key value of isPublic = true
 
-    // Step 2: Fetch metadata for each file
+    // Step 3: Fetch metadata for each file
     const filesWithMetadata = await Promise.all(
       files.map(async (file) => {
         try {

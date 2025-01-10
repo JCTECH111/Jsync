@@ -1,21 +1,20 @@
 import { useState } from "react";
+import { getFilesWithSearch } from "../lib/fetchSearchResult";
 import {
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
-
+import { DocumentIcon} from "@heroicons/react/24/outline";
 const SearchPage = () => {
   const [query, setQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([
     "Public Document 1",
     "Public Document 2",
     "Shared Document 3",
   ]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-  const [documents, setDocuments] = useState([
-    { id: 1, name: "Public Document 1", owner: "John Doe", date: "2025-01-01" },
-    { id: 2, name: "Public Document 2", owner: "Jane Smith", date: "2025-01-02" },
-  ]);
+  const [documents, setDocuments] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   const handleSearchChange = (e) => {
@@ -40,7 +39,25 @@ const SearchPage = () => {
   const handleActionClick = (id) => {
     setActiveDropdown(activeDropdown === id ? null : id);
   };
-
+  const handleSubmit = async () => {
+    setIsLoading(true)
+    try {
+      const result = await getFilesWithSearch(query)
+      console.log(result)
+      setDocuments(result)
+    } catch (error) {
+      return error
+    } finally {
+      setIsLoading(false)
+    }
+  };
+  const tagStyles = {
+    music: "bg-yellow-100 text-yellow-700",
+    image: "bg-purple-100 text-purple-700",
+    video: "bg-blue-100 text-blue-700",
+    document: "bg-green-100 text-green-700",
+    other: "bg-pink-100 text-pink-700",
+  };
   return (
     <div className="container p-4 mx-auto">
       <h2 className="mb-6 text-3xl font-bold text-gray-800">
@@ -57,7 +74,7 @@ const SearchPage = () => {
             value={query}
             onChange={handleSearchChange}
           />
-          <button className="px-4 py-3 bg-blue-500 rounded-r-lg hover:bg-blue-600">
+          <button className="px-4 py-3 bg-blue-500 rounded-r-lg hover:bg-blue-600" type="submit" onClick={handleSubmit}>
             <MagnifyingGlassIcon className="w-6 h-6 text-white" />
           </button>
         </div>
@@ -82,10 +99,22 @@ const SearchPage = () => {
           <thead className="bg-gray-100">
             <tr>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
+                #
+              </th>
+              <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
                 Name
               </th>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
                 Owner
+              </th>
+              <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
+                fileType
+              </th>
+              <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
+                Size
+              </th>
+              <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
+                Label
               </th>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
                 Date
@@ -96,19 +125,33 @@ const SearchPage = () => {
           <tbody>
             {documents.map((doc) => (
               <tr
-                key={doc.id}
+                key={doc.$id}
                 className="transition-colors hover:bg-gray-100"
               >
-                <td className="px-6 py-4 text-gray-800">{doc.name}</td>
-                <td className="px-6 py-4 text-gray-800">{doc.owner}</td>
-                <td className="px-6 py-4 text-gray-800">{doc.date}</td>
+                <td className="px-6 py-4 text-gray-800"><DocumentIcon className="w-5 h-5 text-gray-400" /></td>
+                <td className="px-6 py-4 text-gray-800">{doc.fileName}</td>
+                <td className="px-6 py-4 text-gray-800">{doc.user.username}</td>
+                <td className="px-6 py-4 text-gray-800">
+                <span
+                        className={`px-2 py-1 text-xs font-medium rounded ${tagStyles[doc.fileType] || "bg-gray-100 text-gray-700"
+                          }`}
+                      >
+                        {doc.fileType || "NAN"}
+                      </span>
+                </td>
+                <td className="px-6 py-4 text-gray-800">{doc.fileSize}</td>
+                <td className="px-6 py-4 text-gray-800">{doc.Label}</td>
+                <td className="px-6 py-4 text-gray-800">
+                  {new Date(doc.createdAt).toLocaleDateString()}{" "}
+                  {new Date(doc.createdAt).toLocaleTimeString()}
+                </td>
                 <td className="relative px-6 py-4">
                   {/* Action Dropdown */}
                   <EllipsisVerticalIcon
                     className="w-6 h-6 text-gray-500 cursor-pointer"
-                    onClick={() => handleActionClick(doc.id)}
+                    onClick={() => handleActionClick(doc.$id)}
                   />
-                  {activeDropdown === doc.id && (
+                  {activeDropdown === doc.$id && (
                     <div className="absolute right-0 z-10 w-40 p-2 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
                       <button className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100">
                         Bookmark
