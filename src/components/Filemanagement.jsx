@@ -8,7 +8,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import { updateUserActivity } from "../lib/updateUserActivities";
 import { AuthContext } from '../context/AuthContext';
 import SoundWaveLoader from "./SoundWaveLoader";
+import ShareModal from "./ShareModal";
 const FileManagement = () => {
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [currentFileLink, setCurrentFileLink] = useState("")
   const { userId } = useContext(AuthContext);
   const [openFolders, setOpenFolders] = useState({}); // Tracks open/closed state of folders
   const [selectedFolder, setSelectedFolder] = useState(null); // Tracks the currently selected folder
@@ -175,7 +178,7 @@ const FileManagement = () => {
       // Open the URL in a new tab
       window.open(url, "_blank");
     } catch (error) {
-      alert("Failed to view the file. Please try again.");
+      alert("Failed to view the file. Please try again.", error);
     }
   };
   const handleDelete = async () => {
@@ -200,6 +203,17 @@ const FileManagement = () => {
       console.error("Delete Error:", error);
     }
   };
+
+  const handleShare = ( ) => {
+    if (selectedFiles.length > 1) {
+      showErrorMessage("Please select at least one file to delete.");
+      return;
+    }
+    console.log(selectedFiles[0])
+    const fileLink = `https://jsync.vercel.app/view/${selectedFiles[0]}`; // Generate your file link
+    setCurrentFileLink(fileLink);
+    setIsShareModalOpen(true);
+  }
 
   const handleButtonClick = () => {
     if (selectedFiles.length === 1) {
@@ -250,6 +264,12 @@ const FileManagement = () => {
                 onClick={handleButtonClick} // Pass appropriate IDs
               >
                 View
+              </button>
+              <button
+                className="px-4 py-2 text-white bg-purple-500 rounded hover:bg-purple-600"
+                onClick={handleShare} // Pass appropriate IDs
+              >
+                Share
               </button>
 
 
@@ -327,6 +347,11 @@ const FileManagement = () => {
           </table>
         </div>
       </main>
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        fileLink={currentFileLink}
+      />
     </div>
   );
 };

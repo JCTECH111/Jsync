@@ -13,7 +13,7 @@ const QuickAccess = () => {
     { title: "Images", icon: PhotoIcon, bgColor: "bg-blue-500", path: "/dashboard/files/image" },
     { title: "Videos", icon: VideoCameraIcon, bgColor: "bg-purple-500", path: "/dashboard/files/videos" },
     { title: "Music", icon: MusicalNoteIcon, bgColor: "bg-green-500", path: "/dashboard/files/music" },
-    { title: "Documents", icon: DocumentTextIcon, bgColor: "bg-yellow-500", path: "/dashboard/files/documents" },
+    { title: "Documents", icon: DocumentTextIcon, bgColor: "bg-yellow-500", path: "/dashboard/files/document" },
     { title: "Others", icon: PaperClipIcon, bgColor: "bg-indigo-500", path: "/dashboard/files/other" },
     { title: "Add", icon: PlusIcon, bgColor: "bg-gray-400", path: "/dashboard/upload" },
   ];

@@ -5,11 +5,14 @@ import { deleteFileWithMetadata } from "../lib/deleteFile";
 import { downloadUrl } from "../lib/download";
 import { ToastContainer, toast } from 'react-toastify';
 import SoundWaveLoader from "../components/SoundWaveLoader";
+import ShareModal from "../components/ShareModal";
 
 const fileColectionId = import.meta.env.VITE_APPWRITE_FILES_ID;
 const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID
 const fileBucketID = import.meta.env.VITE_APPWRITE_BUCKET_USERS_UPLOAD_DOCUMENT;
 const FileList = () => {
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [currentFileLink, setCurrentFileLink] = useState("")
   const [files, setFiles] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const allFiles = useFetchFiles();
@@ -112,6 +115,16 @@ const FileList = () => {
     setFiles(files.filter((file) => !selectedFiles.includes(file.$id)));
     setSelectedFiles([]);
   };
+  const handleShare = ( ) => {
+    if (selectedFiles.length > 1) {
+      showErrorMessage("Please select at least one file to delete.");
+      return;
+    }
+    console.log(selectedFiles[0])
+    const fileLink = `https://jsync.vercel.app/view/${selectedFiles[0]}`; // Generate your file link
+    setCurrentFileLink(fileLink);
+    setIsShareModalOpen(true);
+  }
 
   return (
     <div className="p-4 overflow-x-scroll">
@@ -129,6 +142,12 @@ const FileList = () => {
             onClick={handleDelete}
           >
             Delete
+          </button>
+          <button
+            className="px-4 py-2 text-white bg-purple-500 rounded hover:bg-purple-600"
+            onClick={handleShare}
+          >
+            Share
           </button>
         </div>
       )}
@@ -196,7 +215,11 @@ const FileList = () => {
         </div>
       </div>
       <ToastContainer />
-      
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        fileLink={currentFileLink}
+      />
     </div>
   );
 };
