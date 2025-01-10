@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getFilesWithSearch } from "../lib/fetchSearchResult";
+import SoundWaveLoader from "../components/SoundWaveLoader";
 import {
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
@@ -123,7 +124,14 @@ const SearchPage = () => {
             </tr>
           </thead>
           <tbody>
-            {documents.map((doc) => (
+          {isLoading ? (
+            <tr>
+                  <td colSpan="7" className="py-4 text-center relative">
+                    <SoundWaveLoader /> {/* Add your spinner or skeleton loader */}
+                  </td>
+                </tr>
+          ): (
+            documents.map((doc) => (
               <tr
                 key={doc.$id}
                 className="transition-colors hover:bg-gray-100"
@@ -163,7 +171,8 @@ const SearchPage = () => {
                   )}
                 </td>
               </tr>
-            ))}
+            ))
+          )}
           </tbody>
         </table>
       </div>
