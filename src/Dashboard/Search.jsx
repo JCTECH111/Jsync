@@ -60,7 +60,7 @@ const SearchPage = () => {
     other: "bg-pink-100 text-pink-700",
   };
   return (
-    <div className="container p-4 mx-auto">
+    <div className="container p-2 mx-auto">
       <h2 className="mb-6 text-3xl font-bold text-gray-800">
         Search Public Documents
       </h2>
