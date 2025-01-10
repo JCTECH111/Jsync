@@ -131,7 +131,7 @@ const RecentFiles = () => {
                 <th className="px-6 py-3 text-sm font-medium text-gray-500">Size</th>
                 <th className="px-6 py-3 text-sm font-medium text-gray-500">Modified</th>
                 <th className="px-6 py-3 text-sm font-medium text-gray-500">Label</th>
-                <th className="px-6 py-3 text-sm font-medium text-gray-500">Members</th>
+                <th className="px-6 py-3 text-sm font-medium text-gray-500">sharedWith</th>
                 <th className="px-6 py-3"></th>
               </tr>
             </thead>

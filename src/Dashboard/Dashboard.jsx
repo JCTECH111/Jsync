@@ -51,6 +51,7 @@ const Dashboard = () => {
           <Link to="/dashboard" onClick={() => {
             setSidebarOpen(false);
             setStorageNav(false);
+            setNotificationOpen(false)
           }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <HomeIcon className="w-6 h-6 text-white" />
             <span>Overview</span>
@@ -58,6 +59,7 @@ const Dashboard = () => {
           <Link to="/dashboard/files" onClick={() => {
             setSidebarOpen(false);
             setStorageNav(false);
+            setNotificationOpen(false)
           }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <FolderIcon className="w-6 h-6 text-white" />
             <span>Files</span>
@@ -65,6 +67,7 @@ const Dashboard = () => {
           <Link to="/dashboard/activities" onClick={() => {
             setSidebarOpen(false);
             setStorageNav(false);
+            setNotificationOpen(false)
           }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <DocumentTextIcon className="w-6 h-6 text-white" />
             <span>Activities</span>
@@ -72,6 +75,7 @@ const Dashboard = () => {
           <Link to="/dashboard/bookmarked" onClick={() => {
             setSidebarOpen(false);
             setStorageNav(false);
+            setNotificationOpen(false)
           }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <BookmarkIcon className="w-6 h-6 text-white" />
             <span>Bookmarked</span>
@@ -79,6 +83,7 @@ const Dashboard = () => {
           <Link to="/dashboard/search" onClick={() => {
             setSidebarOpen(false);
             setStorageNav(false);
+            setNotificationOpen(false)
           }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <MagnifyingGlassIcon className="w-6 h-6 text-white" />
             <span>Search</span>
@@ -87,6 +92,7 @@ const Dashboard = () => {
           <Link to="/dashboard/settings" onClick={() => {
             setSidebarOpen(false);
             setStorageNav(false);
+            setNotificationOpen(false)
           }} className="flex items-center px-4 py-3 space-x-2 rounded-md hover:bg-blue-700">
             <CogIcon className="w-6 h-6 text-white" />
             <span>Settings</span>
