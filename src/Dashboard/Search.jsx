@@ -10,6 +10,10 @@ import { DocumentIcon } from "@heroicons/react/24/outline";
 import BookmarkModal from "../components/BookmarkModal";
 import { AuthContext } from '../context/AuthContext';
 import { removeBookmarked } from '../lib/removeBookmarked'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 const SearchPage = () => {
   const { userId } = useContext(AuthContext);
   const [query, setQuery] = useState("");
@@ -60,12 +64,13 @@ const SearchPage = () => {
       setIsModalOpen(true);
       setFileId(fileId);
       setActiveDropdown(null); // Close the dropdown
-      console.log(`Bookmark added for file ${fileId}`);
+
     } catch (error) {
       console.error("Error adding bookmark:", error);
+      toast.error("Failed to add bookmark. Please try again.");
     }
   };
-  
+
   const handleRemoveBookmark = async (fileId) => {
     alert(fileId)
     try {
@@ -76,23 +81,25 @@ const SearchPage = () => {
       );
       await removeBookmarked(fileId);
       setActiveDropdown(null); // Close the dropdown
-      console.log(`Bookmark removed for file ${fileId}`);
+      toast.success("Bookmark removed successfully!");;
     } catch (error) {
       console.error("Error removing bookmark:", error);
+      toast.error("Failed to remove bookmark. Please try again.");
     }
   };
-  
+
 
 
   const handleSubmit = async () => {
     setIsLoading(true)
+    toast.success("Search completed successfully!");
     console.log(userId)
     try {
       const result = await getFilesWithSearch(query)
       console.log(result)
       setDocuments(result)
     } catch (error) {
-      return error
+      toast.error("Failed to fetch search results. Please try again.", error);
     } finally {
       setIsLoading(false)
     }
@@ -109,7 +116,7 @@ const SearchPage = () => {
       <h2 className="mb-6 text-3xl font-bold text-gray-800">
         Search Public Documents
       </h2>
-
+      <ToastContainer />
       {/* Search Input with Suggestions */}
       <div className="relative flex flex-col mb-6">
         <div className="flex items-center">
@@ -140,18 +147,18 @@ const SearchPage = () => {
       </div>
 
       {/* Documents Table */}
-      <div className="h-screen overflow-x-auto overscroll-y-auto rounded-xl">
-        <table className="min-w-full text-left border border-gray-300 shadow-lg rounded-xl">
+      <div className="h-screen overflow-x-auto overscroll-y-auto rounded-xl w-full">
+        <table className="table-auto w-full border-collapse min-w-full text-left border border-gray-300 shadow-lg rounded-xl">
           <thead className="bg-gray-100">
             <tr>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
                 User
               </th>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
-                #
+                User Name
               </th>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
-                User Name
+                #
               </th>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
                 File Name
@@ -175,28 +182,36 @@ const SearchPage = () => {
             {isLoading ? (
               <tr>
                 <td colSpan="8" className="py-4 text-center relative">
-                  <SoundWaveLoader /> {/* Add your spinner or skeleton loader */}
+                  <SoundWaveLoader />
                 </td>
               </tr>
             ) : (
               documents.map((doc) => (
                 <tr
                   key={doc.$id}
-                  className="transition-colors hover:bg-gray-100"
+                  className="h-[5rem] transition-colors hover:bg-gray-100"
                 >
-                  <td className="px-6 py-4 text-gray-800">
+                  {/* Image Column */}
+                  <td className="w-[4rem] px-6 py-4">
                     <img
                       src={doc.user.profile}
-                      alt="Descriptive Alt Text"
+                      alt="Profile"
                       className="w-[3rem] h-[3rem] object-cover rounded-full border border-gray-300"
                     />
                   </td>
 
-                  <td className="px-6 py-4 text-gray-800">{doc.fileName}</td>
+                  {/* Username Column */}
+                  <td className="px-6 py-4 text-gray-800">{doc.user.username}</td>
+
+                  {/* Icon Column */}
                   <td className="px-6 py-4 text-gray-800">
                     <DocumentIcon className="w-5 h-5 text-gray-400" />
                   </td>
-                  <td className="px-6 py-4 text-gray-800">{doc.user.username}</td>
+
+                  {/* File Name Column */}
+                  <td className="px-6 py-4 text-gray-800">{doc.fileName}</td>
+
+                  {/* File Type Column */}
                   <td className="px-6 py-4 text-gray-800">
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded ${tagStyles[doc.fileType] || "bg-gray-100 text-gray-700"
@@ -205,14 +220,21 @@ const SearchPage = () => {
                       {doc.fileType || "NAN"}
                     </span>
                   </td>
+
+                  {/* File Size Column */}
                   <td className="px-6 py-4 text-gray-800">{doc.fileSize}</td>
+
+                  {/* Label Column */}
                   <td className="px-6 py-4 text-gray-800">{doc.Label}</td>
+
+                  {/* Date Column */}
                   <td className="px-6 py-4 text-gray-800">
                     {new Date(doc.createdAt).toLocaleDateString()}{" "}
                     {new Date(doc.createdAt).toLocaleTimeString()}
                   </td>
+
+                  {/* Action Column */}
                   <td className="relative px-6 py-4">
-                    {/* Action Dropdown */}
                     <EllipsisVerticalIcon
                       className="w-6 h-6 text-gray-500 cursor-pointer"
                       onClick={() => handleActionClick(doc.$id)}
@@ -221,27 +243,19 @@ const SearchPage = () => {
                       <div className="absolute right-0 z-10 w-40 p-2 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
                         {doc.isBookmarked ? (
                           <button
-                            onClick={() => {
-                              // Optimistically update the UI
-                              handleRemoveBookmark(doc.$id);
-                            }}
-                            className="block rounded-2xl w-full px-4 py-2 text-left bg-blue-600 text-white hover:bg-blue-800"
+                            onClick={() => handleRemoveBookmark(doc.$id)}
+                            className="block w-full px-4 py-2 text-left bg-blue-600 text-white hover:bg-blue-800 rounded-2xl"
                           >
                             Bookmarked
                           </button>
                         ) : (
                           <button
-                            onClick={() => {
-                              // Optimistically update the UI
-                              handleAddBookmark(doc.$id);
-                            }}
+                            onClick={() => handleAddBookmark(doc.$id)}
                             className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
                           >
                             Bookmark
                           </button>
                         )}
-
-
                       </div>
                     )}
                   </td>

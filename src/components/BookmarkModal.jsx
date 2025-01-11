@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { addBookmark } from "../lib/addBookMark"; // Import the function
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function BookmarkModal({ fileId, userId, onClose, id }) {
   const [notes, setNotes] = useState("");
@@ -14,8 +16,9 @@ function BookmarkModal({ fileId, userId, onClose, id }) {
     try {
       await addBookmark(fileId, userId, notes, id);
       onClose(); // Close the modal after successful submission
+      toast.success("Bookmark added successfully!");
     } catch (error) {
-      setErrorMessage("Failed to add bookmark. Please try again.");
+      setErrorMessage("Failed to add bookmark. Please try again.", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -23,6 +26,7 @@ function BookmarkModal({ fileId, userId, onClose, id }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <ToastContainer />
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-auto relative">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Add Bookmark</h2>
         <form onSubmit={handleSubmit} className="space-y-4">

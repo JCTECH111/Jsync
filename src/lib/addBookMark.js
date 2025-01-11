@@ -27,10 +27,10 @@ export const addBookmark = async (fileId, userId, notes, bookMarkId) => {
       bookmarksCollectionID,
       bookMarkId, // Unique bookmark ID
       {
-        fileId,
-        timestamp,
-        notes,
-        userId,
+          timestamp,
+          notes,
+          userId,
+          fileId,
       }
     );
 
