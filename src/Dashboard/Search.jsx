@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import {  ID } from "appwrite";
+import { ID } from "appwrite";
 import { getFilesWithSearch } from "../lib/fetchSearchResult";
 import SoundWaveLoader from "../components/SoundWaveLoader";
 import {
@@ -9,7 +9,7 @@ import {
 import { DocumentIcon } from "@heroicons/react/24/outline";
 import BookmarkModal from "../components/BookmarkModal";
 import { AuthContext } from '../context/AuthContext';
-
+import { removeBookmarked } from '../lib/removeBookmarked'
 const SearchPage = () => {
   const { userId } = useContext(AuthContext);
   const [query, setQuery] = useState("");
@@ -24,6 +24,7 @@ const SearchPage = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [fileId, setFileId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [uniqueId, setUniqueId] = useState(ID.unique());
 
 
   const handleSearchChange = (e) => {
@@ -48,6 +49,41 @@ const SearchPage = () => {
   const handleActionClick = (id) => {
     setActiveDropdown(activeDropdown === id ? null : id);
   };
+
+  const handleAddBookmark = async (fileId) => {
+    try {
+      setDocuments((prevDocs) =>
+        prevDocs.map((doc) =>
+          doc.$id === fileId ? { ...doc, isBookmarked: true } : doc
+        )
+      );
+      setIsModalOpen(true);
+      setFileId(fileId);
+      setActiveDropdown(null); // Close the dropdown
+      console.log(`Bookmark added for file ${fileId}`);
+    } catch (error) {
+      console.error("Error adding bookmark:", error);
+    }
+  };
+  
+  const handleRemoveBookmark = async (fileId) => {
+    alert(fileId)
+    try {
+      setDocuments((prevDocs) =>
+        prevDocs.map((doc) =>
+          doc.$id === fileId ? { ...doc, isBookmarked: false } : doc
+        )
+      );
+      await removeBookmarked(fileId);
+      setActiveDropdown(null); // Close the dropdown
+      console.log(`Bookmark removed for file ${fileId}`);
+    } catch (error) {
+      console.error("Error removing bookmark:", error);
+    }
+  };
+  
+
+
   const handleSubmit = async () => {
     setIsLoading(true)
     console.log(userId)
@@ -109,13 +145,16 @@ const SearchPage = () => {
           <thead className="bg-gray-100">
             <tr>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
+                User
+              </th>
+              <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
                 #
               </th>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
-                Name
+                User Name
               </th>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
-                Owner
+                File Name
               </th>
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
                 fileType
@@ -146,9 +185,17 @@ const SearchPage = () => {
                   className="transition-colors hover:bg-gray-100"
                 >
                   <td className="px-6 py-4 text-gray-800">
+                    <img
+                      src={doc.user.profile}
+                      alt="Descriptive Alt Text"
+                      className="w-[3rem] h-[3rem] object-cover rounded-full border border-gray-300"
+                    />
+                  </td>
+
+                  <td className="px-6 py-4 text-gray-800">{doc.fileName}</td>
+                  <td className="px-6 py-4 text-gray-800">
                     <DocumentIcon className="w-5 h-5 text-gray-400" />
                   </td>
-                  <td className="px-6 py-4 text-gray-800">{doc.fileName}</td>
                   <td className="px-6 py-4 text-gray-800">{doc.user.username}</td>
                   <td className="px-6 py-4 text-gray-800">
                     <span
@@ -172,15 +219,29 @@ const SearchPage = () => {
                     />
                     {activeDropdown === doc.$id && (
                       <div className="absolute right-0 z-10 w-40 p-2 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
-                        <button
-                          onClick={() => {
-                            setIsModalOpen(true);
-                            setFileId(doc.$id);
-                          }}
-                          className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Bookmark
-                        </button>
+                        {doc.isBookmarked ? (
+                          <button
+                            onClick={() => {
+                              // Optimistically update the UI
+                              handleRemoveBookmark(doc.$id);
+                            }}
+                            className="block rounded-2xl w-full px-4 py-2 text-left bg-blue-600 text-white hover:bg-blue-800"
+                          >
+                            Bookmarked
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              // Optimistically update the UI
+                              handleAddBookmark(doc.$id);
+                            }}
+                            className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+                          >
+                            Bookmark
+                          </button>
+                        )}
+
+
                       </div>
                     )}
                   </td>
@@ -197,7 +258,7 @@ const SearchPage = () => {
           fileId={fileId}
           userId={userId}
           onClose={() => setIsModalOpen(false)}
-          id={ID.unique()}
+          id={uniqueId}
         />
       )}
     </div>

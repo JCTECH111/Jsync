@@ -1,4 +1,4 @@
-import { Databases, Query } from "appwrite";
+import { Databases, Query, Storage } from "appwrite";
 import { client } from "./appwrite";
 
 const databases = new Databases(client);
@@ -6,23 +6,33 @@ const databaseId = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const filesCollectionID = import.meta.env.VITE_APPWRITE_FILES_ID;
 const fileMetadataCollectionID = import.meta.env.VITE_APPWRITE_FILE_METADATA_ID;
 const userMetadataCollectionID = import.meta.env.VITE_APPWRITE_USER_METADATA_ID;
+const bookmarksCollectionID = import.meta.env.VITE_APPWRITE_BOOKMARK_ID;
+const userProfileImageId = import.meta.env.VITE_APPWRITE_BUCKET_USERS_AVATAR;
+
+const storage = new Storage(client);
 
 export const getFilesWithSearch = async (searchInput) => {
+  console.log("Search Input:", searchInput);
+
   try {
-    // Step 1: Fetch all files
+    console.log("Step 1: Fetching public files...");
     const filesResponse = await databases.listDocuments(
       databaseId,
       filesCollectionID,
-      [Query.equal("isPublic", true)]
+      [Query.equal("isPublic", true), Query.limit(50)] // Limit to 50 files per batch
     );
+
     const files = filesResponse.documents;
+    console.log(`Public files fetched: ${files.length}`);
 
     if (files.length === 0) {
-      console.warn("No files found.");
-      return []; // Return early if no files found
+      console.warn("No public files found.");
+      return [];
     }
+    console.log("Fetched Files:", files);
 
-    // Step 2: Filter files based on the search input
+    // Step 2: Filter files based on search input
+    console.log("Step 2: Filtering files...");
     const filteredFiles = files.filter(
       (file) =>
         file.Label?.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -30,67 +40,90 @@ export const getFilesWithSearch = async (searchInput) => {
         file.fileType?.toLowerCase().includes(searchInput.toLowerCase())
     );
 
+    console.log(`Filtered files count: ${filteredFiles.length}`);
     if (filteredFiles.length === 0) {
       console.warn("No matching files found for the search input.");
-      return []; // Return early if no matches found
+      return [];
     }
 
-    // Step 3: Fetch metadata and user data for each filtered file
+    // Step 3: Fetch metadata, user data, and bookmark status for each file
+    console.log("Step 3: Fetching metadata, user data, and bookmark status...");
     const filesWithMetadataAndUser = await Promise.all(
-      filteredFiles.map(async (file) => {
+      filteredFiles.map(async (file, index) => {
+        console.log(`Processing file ${index + 1}/${filteredFiles.length}: ${file.$id}`);
         try {
-          // Fetch metadata for the current file
+          // Fetch file metadata
           const metadataResponse = await databases.listDocuments(
             databaseId,
             fileMetadataCollectionID,
-            [Query.equal("fileMetadataId", file.$id)] // Match metadata to file by fileId
+            [Query.equal("fileMetadataId", file.$id)]
           );
+          const metadata = metadataResponse.documents[0] || {};
 
-          const metadata = metadataResponse.documents[0] || {}; // Use the first metadata document or fallback to empty
-
-          // Fetch user details based on ownerId
-          let user = {};
+          // Fetch user data
+          let user = { username: "Unknown User", profile: null };
           if (file.ownerId) {
             try {
               const userResponse = await databases.listDocuments(
                 databaseId,
                 userMetadataCollectionID,
-                [Query.equal("userId", file.ownerId)] // Match userId in user metadata
+                [Query.equal("userId", file.ownerId)]
               );
-              const userDocument = userResponse.documents[0]; // Get the first user document
-              if (userDocument) {
-                user = {
-                  username: userDocument.userName, // Use the correct field name for username
-                };
-              } else {
-                user = { username: "Unknown User" }; // Fallback if no user document found
+              const userDocument = userResponse.documents[0];
+
+              let profileResponse = null;
+              if (userDocument?.avatarId) {
+                profileResponse = await storage.getFilePreview(
+                  userProfileImageId,
+                  userDocument.avatarId
+                );
               }
+
+              user = {
+                username: userDocument?.userName || "Unknown User",
+                profile: profileResponse?.href || "default-profile-image-url.jpg",
+              };
             } catch (userError) {
               console.warn(`Unable to fetch user for ownerId ${file.ownerId}:`, userError);
-              user = { username: "Unknown User" }; // Fallback if user fetch fails
             }
           }
 
-          // Combine file data with its metadata and user
+          // Check if the file is bookmarked
+          let isBookmarked = false;
+          try {
+            const bookmarkResponse = await databases.listDocuments(
+              databaseId,
+              bookmarksCollectionID,
+              [Query.equal("userId", file.ownerId), Query.equal("fileId", file.$id)]
+            );
+            isBookmarked = bookmarkResponse.documents.length > 0;
+          } catch (bookmarkError) {
+            console.warn(`Unable to fetch bookmarks for file ${file.$id}:`, bookmarkError);
+          }
+
+          // Combine file data with its metadata, user, and bookmark status
           return {
             ...file,
             metadata,
-            user, // Add user data
+            user,
+            isBookmarked,
           };
         } catch (error) {
           console.error(`Error processing file ${file.$id}:`, error);
 
-          // Return the file with empty metadata and user on error
+          // Return file with default metadata, user, and bookmark status
           return {
             ...file,
             metadata: {},
-            user: { username: "Unknown User" },
+            user: { username: "Unknown User", profile: null },
+            isBookmarked: false,
           };
         }
       })
     );
 
-    return filesWithMetadataAndUser; // Return the final array
+    console.log("Processing completed.");
+    return filesWithMetadataAndUser;
   } catch (error) {
     console.error("Error fetching files, metadata, and user data:", error);
     throw error;
