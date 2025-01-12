@@ -72,7 +72,6 @@ const SearchPage = () => {
   };
 
   const handleRemoveBookmark = async (fileId) => {
-    alert(fileId)
     try {
       setDocuments((prevDocs) =>
         prevDocs.map((doc) =>
@@ -92,12 +91,12 @@ const SearchPage = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true)
-    toast.success("Search completed successfully!");
     console.log(userId)
     try {
       const result = await getFilesWithSearch(query)
       console.log(result)
       setDocuments(result)
+      toast.success("Search completed successfully!");
     } catch (error) {
       toast.error("Failed to fetch search results. Please try again.", error);
     } finally {
@@ -175,7 +174,7 @@ const SearchPage = () => {
               <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">
                 Date
               </th>
-              <th className="px-6 py-3"></th>
+              <th className="px-6 py-3 text-sm font-medium text-gray-600 uppercase">Action</th>
             </tr>
           </thead>
           <tbody>
