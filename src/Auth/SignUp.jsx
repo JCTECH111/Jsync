@@ -33,10 +33,11 @@ async function sendEmailVerification() {
     try {
         const response = await account.createVerification('https://jsync.vercel.app/verify');
         console.log("Verification email sent:", response);
+        showSuccessMessage("A verification email has been sent to your email address. Please check your inbox.");
         alert("A verification email has been sent to your email address. Please check your inbox.");
     } catch (error) {
         console.error("Error sending verification email:", error);
-        alert("Error sending verification email. Please try again later.");
+        showErrorMessage("Error sending verification email. Please try again later.");
     }
 }
 // Function to upload image
