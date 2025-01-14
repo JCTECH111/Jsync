@@ -94,9 +94,10 @@ async function sendEmailVerification() {
     }
   };
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
     return passwordRegex.test(password);
   };
+  
   
   const handlePasswordChange = (e) => {
     const value = e.target.value;
@@ -105,7 +106,7 @@ async function sendEmailVerification() {
 
     if (!validatePassword(value)) {
         setPasswordError(
-          'Password must be at least 8 characters long, include one number, and one special character.'
+          'Password must be at least 8 characters long, include one number, letters, and one special character.'
         );
       } else {
         setPasswordError('');
@@ -155,7 +156,7 @@ async function sendEmailVerification() {
       );
       // Step 2: Create a temporary session for the user
       await account.createEmailPasswordSession(email, password);
-      showSuccessMessage("Temporary session created");
+      // showSuccessMessage("Temporary session created");
       // Simulate a loading or splash screen effect
   
       sendEmailVerification()
