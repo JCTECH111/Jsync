@@ -215,7 +215,7 @@ const FileManagementPage = () => {
                             </select>
                         </div>
                         <div className="flex flex-col">
-                            <label className="font-medium text-gray-600">Custom File Input</label>
+                            <label className="font-medium text-gray-600">Upload Document</label>
                             <div className="relative">
                                 <input
                                     type="file"

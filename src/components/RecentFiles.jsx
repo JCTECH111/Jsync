@@ -11,6 +11,7 @@ const fileBucketID = import.meta.env.VITE_APPWRITE_BUCKET_USERS_UPLOAD_DOCUMENT;
   import { updateUserActivity } from "../lib/updateUserActivities";
   import { ToastContainer, toast } from 'react-toastify';
   import ShareModal from "./ShareModal";
+import { Link } from "react-router-dom";
 
 const RecentFiles = () => {
   
@@ -143,7 +144,31 @@ const RecentFiles = () => {
                   </td>
                 </tr>
               ) : (
-                files.map((file) => (
+                files.length <= 0 ? (
+                  <tr>
+                  <td colSpan="6" className="py-4 text-center">
+                  <div className="flex flex-col items-center justify-center text-gray-600 p-6   border-gray-200 rounded-md ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-12 h-12 mb-4 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 12h6m2 0a2 2 0 100-4H7a2 2 0 100 4m0 0a2 2 0 01-4 0m18 0a2 2 0 01-4 0"
+                      />
+                    </svg>
+                    <p className="text-lg font-semibold">No files available</p>
+                    <Link to="/dashboard/upload"><p className="text-sm text-blue-500">Upload files to get started.</p></Link>
+                  </div>
+                  </td>
+                </tr>
+                ) : (
+                  files.map((file) => (
                   <tr key={file.$id} className="transition-colors border-b hover:bg-gray-50">
                     <td className="flex items-center px-6 py-4 space-x-3">
                       {file.metadata.type === "folder" ? (
@@ -217,6 +242,7 @@ const RecentFiles = () => {
                     </td>
                   </tr>
                 ))
+                )
               )}
             </tbody>
           </table>

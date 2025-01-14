@@ -9,6 +9,7 @@ import { updateUserActivity } from "../lib/updateUserActivities";
 import { AuthContext } from '../context/AuthContext';
 import SoundWaveLoader from "./SoundWaveLoader";
 import ShareModal from "./ShareModal";
+import { Link } from "react-router-dom";
 const FileManagement = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [currentFileLink, setCurrentFileLink] = useState("")
@@ -31,10 +32,10 @@ const FileManagement = () => {
   // const files = fileStructure
   useEffect(() => {
     try {
-      
+
       setFiles(fetchedFiles); // Update the state with the new files list
     } catch (error) {
-         return error
+      return error
     } finally {
       setIsLoading(false)
     }
@@ -82,7 +83,7 @@ const FileManagement = () => {
       setSelectedFolder(folderId);
     } catch (error) {
       console.log(error)
-    } finally{
+    } finally {
       setIsLoading(false)
     }
   };
@@ -204,7 +205,7 @@ const FileManagement = () => {
     }
   };
 
-  const handleShare = ( ) => {
+  const handleShare = () => {
     if (selectedFiles.length > 1) {
       showErrorMessage("Please select at least one file to delete.");
       return;
@@ -235,9 +236,30 @@ const FileManagement = () => {
       <aside className="p-4 bg-white shadow-md lg:w-1/4">
         <h2 className="mb-4 text-xl font-bold text-gray-700">My Folders</h2>
         <ul className="space-y-2">
-          {folderStructure
-            .filter((folder) => folder.parentFolderId === null)
-            .map((folder) => renderFolder(folder))}
+          {folderStructure.length <= 0 ? (
+            <div className="flex flex-col items-center justify-center text-gray-600">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-10 h-10 mb-2 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12h6m2 0a2 2 0 100-4H7a2 2 0 100 4m0 0a2 2 0 01-4 0m18 0a2 2 0 01-4 0"
+                />
+              </svg>
+              <p className="text-lg font-semibold">No folders available</p>
+              <Link to="/dashboard/upload"><p className="text-sm text-blue-500">Create a folder to get started.</p></Link>
+            </div>
+          ) : (
+            folderStructure
+              .filter((folder) => folder.parentFolderId === null)
+              .map((folder) => renderFolder(folder))
+          )}
         </ul>
       </aside>
       <ToastContainer />
@@ -305,44 +327,72 @@ const FileManagement = () => {
               </tr>
             </thead>
             <tbody>
-            {isLoading ? (
-              <tr>
+              {isLoading ? (
+                <tr>
                   <td colSpan="6" className="py-4 text-center">
                     <SoundWaveLoader /> {/* Add your spinner or skeleton loader */}
                   </td>
                 </tr>
-            ) : files
-                .filter((file) => file.folderId === selectedFolder)
-                .map((file) => (
-                  <tr key={file.$id} className="border-b hover:bg-gray-100">
-                    <td className="px-4 py-2 text-gray-600">
-                      <input
-                        type="checkbox"
-                        checked={selectedFiles.includes(file.$id)}
-                        onChange={() => handleCheckboxChange(file.$id)}
+              ) : (
+                files.length <= 0 ? (
+                  <tr>
+                  <td colSpan="6" className="py-4 text-center">
+                  <div className="flex flex-col items-center justify-center text-gray-600 p-6   border-gray-200 rounded-md ">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-12 h-12 mb-4 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 12h6m2 0a2 2 0 100-4H7a2 2 0 100 4m0 0a2 2 0 01-4 0m18 0a2 2 0 01-4 0"
                       />
-                    </td>
-                    <td className="px-4 py-2 text-gray-600">{file.fileName}</td>
-                    <td className="px-4 py-2 text-gray-600">{file.fileSize}</td>
-                    <td className="px-4 py-2 text-gray-600"><td className="px-4 py-2 ">
-                      {new Date(file.createdAt).toLocaleDateString()}{" "}
-                      {new Date(file.createdAt).toLocaleTimeString()}
-                    </td>
-                    </td>
-                    <td className="px-4 py-2 text-gray-600">
-                      {file.Label ? (
-                        <span className="px-2 py-1 text-sm text-white bg-blue-500 rounded">
-                          {file.Label}
-                        </span>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600">
-                      {file.members} members
-                    </td>
-                  </tr>
-                ))}
+                    </svg>
+                    <p className="text-lg font-semibold">No files available</p>
+                    <Link to="/dashboard/upload"><p className="text-sm text-blue-500">Upload files to get started.</p></Link>
+                  </div>
+                  </td>
+                </tr>
+                  
+                ) : (
+                  files
+                    .filter((file) => file.folderId === selectedFolder)
+                    .map((file) => (
+                      <tr key={file.$id} className="border-b hover:bg-gray-100">
+                        <td className="px-4 py-2 text-gray-600">
+                          <input
+                            type="checkbox"
+                            checked={selectedFiles.includes(file.$id)}
+                            onChange={() => handleCheckboxChange(file.$id)}
+                          />
+                        </td>
+                        <td className="px-4 py-2 text-gray-600">{file.fileName}</td>
+                        <td className="px-4 py-2 text-gray-600">{file.fileSize}</td>
+                        <td className="px-4 py-2 text-gray-600"><td className="px-4 py-2 ">
+                          {new Date(file.createdAt).toLocaleDateString()}{" "}
+                          {new Date(file.createdAt).toLocaleTimeString()}
+                        </td>
+                        </td>
+                        <td className="px-4 py-2 text-gray-600">
+                          {file.Label ? (
+                            <span className="px-2 py-1 text-sm text-white bg-blue-500 rounded">
+                              {file.Label}
+                            </span>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
+                        <td className="px-4 py-2 text-gray-600">
+                          {file.members} members
+                        </td>
+                      </tr>
+                    ))
+                )
+              )}
             </tbody>
           </table>
         </div>

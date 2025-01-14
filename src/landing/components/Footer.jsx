@@ -1,18 +1,37 @@
-import React from "react";
-
 const Footer = () => {
   return (
-    <footer id="contact" className="bg-blue-600 text-white py-10">
-      <div className="container mx-auto text-center">
-        <h3 className="text-2xl font-bold mb-4">Contact Us</h3>
-        <p>Email: support@filemaster.com | Phone: +1 (234) 567-890</p>
-        <p className="mt-4">
-          Follow us on:
-          <a href="#" className="text-white underline ml-2">Twitter</a>,
-          <a href="#" className="text-white underline ml-2">Facebook</a>,
-          <a href="#" className="text-white underline ml-2">LinkedIn</a>
-        </p>
-        <p className="mt-4 text-sm">&copy; 2024 FileMaster. All rights reserved.</p>
+    <footer className=" py-4 text-gray-400 text-sm border-t border-gray-400">
+      <div className="container mx-auto flex justify-between items-center">
+        {/* Left Section */}
+        <p>© 2025 Jsync - By Nnamezie Jonathan - JoeCode</p>
+
+        {/* Right Section */}
+        <div className="space-x-4">
+          <a
+            href="https://github.com/jctech111"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white"
+          >
+            Github
+          </a>
+          {/* <a
+            href="https://fundJoe.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white"
+          >
+            Portfolio
+          </a> */}
+          <a
+            href="https://wa.me/qr/7AQDB3GTR3MOB1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white"
+          >
+            Contact
+          </a>
+        </div>
       </div>
     </footer>
   );

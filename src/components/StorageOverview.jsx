@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import SoundWaveLoader from "./SoundWaveLoader";
 
 function StorageOverview() {
     const [storageUsed, setStorageUsed] = useState(0); // Used storage (percentage)
@@ -16,7 +17,10 @@ function StorageOverview() {
     const [storageData, setStorageData] = useState([]); // Storage details by type
     const { userId } = useContext(AuthContext);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true)
         const fetchStorageData = async () => {
             try {
                 // Fetch storage details grouped by file type from the server
@@ -76,6 +80,8 @@ function StorageOverview() {
                 setStorageData(mappedStorageData); // Storage details for rendering
             } catch (error) {
                 console.error("Failed to fetch storage data:", error);
+            } finally {
+                setIsLoading(false)
             }
         };
 
@@ -132,23 +138,48 @@ function StorageOverview() {
 
             {/* Storage Details */}
             <div className="space-y-3">
-                {storageData.map((item, index) => (
-                    <div
-                        key={index}
-                        className="flex items-center justify-between p-2 rounded-lg bg-gray-50 hover:shadow-sm"
-                    >
-                        <div className="flex items-center">
-                            <item.icon className="w-8 h-8 text-blue-500" />
-                            <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-700">{item.label}</p>
-                                <p className="text-xs text-gray-500">{item.files} Files</p>
-                            </div>
+                {isLoading ? (
+                    <SoundWaveLoader />
+                ) : (
+                    storageData.length <= 0 ? (
+                        <div className="flex flex-col items-center justify-center text-gray-600 p-6 bg-gray-50 border border-gray-200 rounded-md shadow-sm">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="w-12 h-12 mb-4 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M9 12h6m2 0a2 2 0 100-4H7a2 2 0 100 4m0 0a2 2 0 01-4 0m18 0a2 2 0 01-4 0"
+                                />
+                            </svg>
+                            <p className="text-lg font-semibold">No storage data available</p>
+                            <p className="text-sm text-gray-500">Upload document to view storage data</p>
                         </div>
-                        <span className="text-sm font-semibold text-gray-700">
-                            {item.size}
-                        </span>
-                    </div>
-                ))}
+                    ) : (
+                        storageData.map((item, index) => (
+                            <div
+                                key={index}
+                                className="flex items-center justify-between p-2 rounded-lg bg-gray-50 hover:shadow-sm"
+                            >
+                                <div className="flex items-center">
+                                    <item.icon className="w-8 h-8 text-blue-500" />
+                                    <div className="ml-3">
+                                        <p className="text-sm font-medium text-gray-700">{item.label}</p>
+                                        <p className="text-xs text-gray-500">{item.files} Files</p>
+                                    </div>
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700">
+                                    {item.size}
+                                </span>
+                            </div>
+                        ))
+                    )
+                )}
             </div>
 
             {/* Upload Button */}

@@ -20,7 +20,7 @@ function UpgradeBanner() {
     <small className='text-gray-500 cursor-pointer'>Close</small>
   </div>
   {/* Button */}
-  <Link to="#">
+  <Link to="/dashboard/settings">
     <button className='flex justify-center items-center h-12 border-blue-600 border-[1px] w-28 rounded-md text-sm mx-auto hover:bg-blue-600 hover:text-white hover:border-none'>
       Upgrade Now
     </button>

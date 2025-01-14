@@ -160,9 +160,27 @@ const Bookmarked = () => {
         <SoundWaveLoader />
         </div>
       ) : bookmarks.length === 0 ? (
-        <div className='w-full items-center justify-center text-gray-600 font-bold'>
-        <p>No bookmarks available.</p>
-        </div>
+        <div className="flex flex-col items-center justify-center w-full p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-sm">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-12 h-12 mb-4 text-gray-400"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M5 10l7-7m0 0l7 7m-7-7v18"
+      />
+    </svg>
+    <p className="text-lg font-semibold text-gray-700">No bookmarks available</p>
+    <p className="mt-2 text-sm text-gray-500">
+      Save your favorite items from public documents being searched to see them here.
+    </p>
+  </div>
+
       ) : (
         <div className="space-y-6">
           {bookmarks.map((bookmark) => (

@@ -32,7 +32,7 @@ export const useFetchFolders = () => {
                 );
                 
                 if (response.documents.length === 0) {
-                    toast.error("No folders found for the user.");
+                    // toast.error("No folders found for the user.");
                     setFolders([]); // Return an empty array if no folders are found
                 } else {
                     setFolders(response.documents);
