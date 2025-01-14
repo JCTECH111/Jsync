@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Hero = () => {
   return (
     <section id="hero" className="py-20 bg-gray-900">
@@ -9,9 +11,11 @@ const Hero = () => {
           The ultimate tool to upload, manage, and share files with ease and
           security.
         </p>
+        <Link to="/signin">
         <button className="bg-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-600">
           Get Started
         </button>
+        </Link>
       </div>
     </section>
   );

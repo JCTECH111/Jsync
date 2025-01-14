@@ -32,7 +32,7 @@ const NoteFromCreator = () => {
                 <div className="flex justify-center space-x-6 pt-6">
                     {/* Gmail Link */}
                     <a
-                        href="mailto:your-email@gmail.com"
+                        href="mailto:jctech333@gmail.com"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center text-gray-300 hover:text-red-400 transition-colors"
@@ -43,7 +43,7 @@ const NoteFromCreator = () => {
 
                     {/* WhatsApp Link */}
                     <a
-                        href="https://wa.me/your-number"
+                        href="https://wa.me/qr/7AQDB3GTR3MOB1"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center text-gray-300 hover:text-green-400 transition-colors"
