@@ -19,9 +19,9 @@ const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([
-    "Public Document 1",
-    "Public Document 2",
-    "Shared Document 3",
+    "Eductional document",
+    "Assignment",
+    "Car papers",
   ]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [documents, setDocuments] = useState([]);
