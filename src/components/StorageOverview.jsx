@@ -1,70 +1,94 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react";
+import { getTheTotalStorage } from "../lib/getTheTotalStorage";
 import {
     PhotoIcon,
     VideoCameraIcon,
     DocumentTextIcon,
     PaperClipIcon,
-    DocumentPlusIcon
+    DocumentPlusIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 function StorageOverview() {
     const [storageUsed, setStorageUsed] = useState(0); // Used storage (percentage)
     const [totalStorage, setTotalStorage] = useState(100); // Total storage capacity (GB)
+    const [storageData, setStorageData] = useState([]); // Storage details by type
+    const { userId } = useContext(AuthContext);
 
     useEffect(() => {
-        // Simulating a server fetch for storage data
         const fetchStorageData = async () => {
             try {
-                //   const response = await fetch("/api/storage"); // Replace with your server endpoint
-                const data = {
-                    "used": 34,  // Used storage in GB
-                    "total": 100 // Total storage capacity in GB
-                }
-                    ;
-                const usedPercentage = (data.used / data.total) * 100; // Calculate percentage
-                setStorageUsed(usedPercentage);
-                setTotalStorage(data.total);
+                // Fetch storage details grouped by file type from the server
+                const storageDetails = await getTheTotalStorage(userId);
+
+                // Initialize total used and storage details
+                let totalUsedBytes = 0;
+
+                // Helper function to convert size strings to bytes
+                const parseSizeToBytes = (size) => {
+                    const units = { kb: 1024, mb: 1024 ** 2, gb: 1024 ** 3 };
+                    const match = size.toLowerCase().match(/([\d.]+)\s*(kb|mb|gb)/);
+                    if (!match) return 0;
+                    const [_, value, unit] = match;
+                    return parseFloat(value) * (units[unit] || 1);
+                };
+
+                // Map the storage details to match the format for rendering
+                const mappedStorageData = storageDetails.map((detail) => {
+                    let icon;
+                    switch (detail.type.toLowerCase()) {
+                        case "image":
+                            icon = PhotoIcon;
+                            break;
+                        case "video":
+                            icon = VideoCameraIcon;
+                            break;
+                        case "document":
+                            icon = DocumentTextIcon;
+                            break;
+                        case "other":
+                        default:
+                            icon = PaperClipIcon;
+                    }
+
+                    // Convert totalSize to bytes and accumulate for totalUsedBytes
+                    const sizeInBytes = parseSizeToBytes(detail.totalSize);
+                    totalUsedBytes += sizeInBytes;
+
+                    return {
+                        icon,
+                        label: detail.type.charAt(0).toUpperCase() + detail.type.slice(1), // Capitalize type
+                        size: detail.totalSize, // Keep original string format for display
+                        files: detail.count,
+                    };
+                });
+
+                // Convert total used bytes to GB for percentage calculation
+                const totalUsedGB = totalUsedBytes / (1024 ** 3); // Convert bytes to GB
+                console.log("used gb", totalUsedGB)
+                const totalCapacityGB = 5; // Example total capacity in GB, adjust as needed
+
+                // Update state
+                setStorageUsed((totalUsedGB / totalCapacityGB) * 100); // Percentage
+                console.log("used gb", storageUsed)
+                setTotalStorage(totalCapacityGB); // Total storage capacity
+                setStorageData(mappedStorageData); // Storage details for rendering
             } catch (error) {
                 console.error("Failed to fetch storage data:", error);
             }
         };
 
+
+
         fetchStorageData();
-    }, []);
-    const storageData = [
-        {
-            icon: PhotoIcon,
-            label: "Images",
-            size: "15.7 GB",
-            files: 259,
-        },
-        {
-            icon: VideoCameraIcon,
-            label: "Videos",
-            size: "20 GB",
-            files: 8,
-        },
-        {
-            icon: DocumentTextIcon,
-            label: "Documents",
-            size: "10.5 GB",
-            files: 46,
-        },
-        {
-            icon: PaperClipIcon,
-            label: "Other Files",
-            size: "2.8 GB",
-            files: 50,
-        },
-    ];
+    }, [userId]);
 
     return (
-        <div className="w-full p-1 ">
-            {/* Half-circle chart */}
+        <div className="w-full p-1">
+            {/* Circular Progress Chart */}
             <div className="w-full p-1">
-                {/* Half-circle chart */}
-                <div className="flex  items-center justify-center h-[20rem] relative">
+                <div className="flex items-center justify-center h-[20rem] relative">
                     <div className="relative w-48 h-[22rem]">
                         <svg viewBox="0 0 100 50" className="absolute inset-0 w-full h-full">
                             {/* Gray background circle */}
@@ -86,7 +110,8 @@ function StorageOverview() {
                                 stroke="currentColor"
                                 className="text-blue-500"
                                 strokeWidth="8"
-                                strokeDasharray={`${(storageUsed / 100) * 282.6} 282.6`} // Adjust progress dynamically
+                                strokeDasharray="282.6" // Full circle perimeter
+                                strokeDashoffset={282.6 - (storageUsed / 100) * 282.6} // Adjust progress dynamically
                                 strokeLinecap="round"
                                 transform="rotate(-90 50 50)"
                             />
@@ -95,13 +120,13 @@ function StorageOverview() {
 
                     <div className="absolute flex flex-col items-center justify-center top-[11rem]">
                         <span className="mt-4 text-2xl font-semibold text-gray-800">
-                            {Math.round(storageUsed)}%
+                            {storageUsed.toFixed(2)}%
                         </span>
                         <p className="text-sm text-gray-500">
-                            {Math.round((storageUsed / 100) * totalStorage)}GB of {totalStorage}GB
-                            used
+                            {storageUsed.toFixed(2)}GB of {totalStorage}GB used
                         </p>
                     </div>
+
                 </div>
             </div>
 

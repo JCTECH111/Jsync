@@ -23,9 +23,7 @@ export const removeBookmarked = async (bookmarkId) => {
 
     await databases.deleteDocument(databaseId, bookmarksCollectionID, documentId);
     console.log(`Bookmark with ID ${bookmarkId} removed successfully.`);
-    alert("Bookmark removed successfully.");
   } catch (error) {
     console.error(`Failed to remove bookmark with ID ${bookmarkId}:`, error);
-    alert("An error occurred while removing the bookmark. Please try again.");
   }
 };
