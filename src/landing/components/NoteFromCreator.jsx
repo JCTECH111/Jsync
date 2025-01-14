@@ -12,7 +12,7 @@ const NoteFromCreator = () => {
                 {/* Paragraphs */}
                 <div className="w-full p-[3rem] bg-gray-800 rounded-2xl">
                     <p className="text-gray-300 max-w-3xl mx-auto mb-6 leading-relaxed">
-                        Hi there! My name is Nnamezie Jonathan aso known as JoeCode, and I’m the developer of Jsync. This project has been an exciting journey of merging technical innovation with a user-focused approach. My aim was to craft a platform that is secure, accessible, and intuitive for everyone.
+                        Hi there! My name is Nnamezie Jonathan also known as JoeCode, and I’m the developer of Jsync. This project has been an exciting journey of merging technical innovation with a user-focused approach. My aim was to craft a platform that is secure, accessible, and intuitive for everyone.
                     </p>
                     <p className="text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed">
                         Creating Jsync gave me the opportunity to explore cutting-edge technologies, learn from challenges, and prioritize privacy and security in the digital space. I hope you find it useful and enjoyable to use!
