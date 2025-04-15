@@ -270,7 +270,7 @@ const FileManagement = () => {
 
           {/* Actions displayed when files are selected */}
           {hasSelectedFiles && (
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 w-full overflow-x-scroll">
               <button className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
                 onClick={handleDelete}>
                 Delete
