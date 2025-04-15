@@ -227,21 +227,93 @@ const FileManagementPage = () => {
                                                 className="object-cover w-12 h-12 rounded"
                                             />
                                         )}
-                                        {selectedFile.type.startsWith("video/") && (
-                                            <div className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded">
-                                                <span className="text-xs text-gray-500">Video</span>
-                                            </div>
-                                        )}
-                                        {selectedFile.type.startsWith("audio/") && (
-                                            <div className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded">
-                                                <span className="text-xs text-gray-500">Audio</span>
-                                            </div>
-                                        )}
-                                        {selectedFile.type.startsWith("application/") && (
-                                            <div className="flex items-center justify-center w-12 h-12 bg-gray-200 rounded">
-                                                <span className="text-xs text-gray-500">Document</span>
-                                            </div>
-                                        )}
+                                        {/* Video Preview */}
+                {selectedFile.type.startsWith("video/") && (
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/179/179483.png"
+                        alt="Video file"
+                        className="w-12 h-12"
+                    />
+                )}
+                
+                {/* Audio Preview */}
+                {selectedFile.type.startsWith("audio/") && (
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/179/179525.png"
+                        alt="Audio file"
+                        className="w-12 h-12"
+                    />
+                )}
+                
+                {/* PDF Preview */}
+                {selectedFile.type === "application/pdf" && (
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/179/179483.png"
+                        alt="PDF file"
+                        className="w-12 h-12"
+                    />
+                )}
+                
+                {/* Word Document Preview */}
+                {(selectedFile.type === "application/msword" || 
+                  selectedFile.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") && (
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/281/281760.png"
+                        alt="Word document"
+                        className="w-12 h-12"
+                    />
+                )}
+                
+                {/* Excel Preview */}
+                {(selectedFile.type === "application/vnd.ms-excel" || 
+                  selectedFile.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") && (
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/281/281764.png"
+                        alt="Excel file"
+                        className="w-12 h-12"
+                    />
+                )}
+                
+                {/* PowerPoint Preview */}
+                {(selectedFile.type === "application/vnd.ms-powerpoint" || 
+                  selectedFile.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") && (
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/281/281768.png"
+                        alt="PowerPoint file"
+                        className="w-12 h-12"
+                    />
+                )}
+                
+                {/* Generic Document Preview */}
+                {selectedFile.type.startsWith("application/") && 
+                    !selectedFile.type.includes("pdf") &&
+                    !selectedFile.type.includes("word") &&
+                    !selectedFile.type.includes("excel") &&
+                    !selectedFile.type.includes("powerpoint") && (
+                    <img
+                        src="https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.CbR9MGxFiYgnyp34kzZ3lAHaHa%26pid%3DApi&sp=1744746040T89c5c8aa950d268a2da13e8cbca574bcf07c715f3232bed44ec6030d02c22172"
+                        alt="Document file"
+                        className="w-12 h-12"
+                    />
+                )}
+                
+                {/* Text File Preview */}
+                {selectedFile.type.startsWith("text/") && (
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/281/281785.png"
+                        alt="Text file"
+                        className="w-12 h-12"
+                    />
+                )}
+                
+                {/* Zip/Archive Preview */}
+                {selectedFile.type.includes("zip") || selectedFile.type.includes("compressed") && (
+                    <img
+                        src="https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.bawV09D7ri7XMMvahjoN_AHaFj%26pid%3DApi&sp=1744745933Tc6e3c02de28a1a7b52b9097cc0a7bd9de4e5bb8b6f2d7c7ba55b973b66bea16d"
+                        alt="Archive file"
+                        className="w-12 h-12"
+                    />
+                )}
                                         <div>
                                             <p className="text-sm font-medium text-gray-700">{selectedFile.name}</p>
                                             <p className="text-xs text-gray-500">{fileSize}</p>
