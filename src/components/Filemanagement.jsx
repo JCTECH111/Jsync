@@ -363,30 +363,30 @@ const FileManagement = () => {
                     .filter((file) => file.folderId === selectedFolder)
                     .map((file) => (
                       <tr key={file.$id} className="border-b hover:bg-gray-100">
-                        <td className="px-4 py-2 text-gray-600">
+                        <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
                           <input
                             type="checkbox"
                             checked={selectedFiles.includes(file.$id)}
                             onChange={() => handleCheckboxChange(file.$id)}
                           />
                         </td>
-                        <td className="px-4 py-2 text-gray-600">{file.fileName}</td>
-                        <td className="px-4 py-2 text-gray-600">{file.fileSize}</td>
-                        <td className="px-4 py-2 text-gray-600"><td className="px-4 py-2 ">
+                        <td className="px-4 py-2 text-gray-600 whitespace-nowrap">{file.fileName}</td>
+                        <td className="px-4 py-2 text-gray-600 whitespace-nowrap">{file.fileSize}</td>
+                        <td className="px-4 py-2 text-gray-600 whitespace-nowrap"><td className="px-4 py-2 ">
                           {new Date(file.createdAt).toLocaleDateString()}{" "}
                           {new Date(file.createdAt).toLocaleTimeString()}
                         </td>
                         </td>
                         <td className="px-4 py-2 text-gray-600">
                           {file.Label ? (
-                            <span className="px-2 py-1 text-sm text-white bg-blue-500 rounded">
+                            <span className="inline-block px-2 py-1 text-sm text-white bg-blue-500 rounded whitespace-nowrap">
                               {file.Label}
                             </span>
                           ) : (
                             "-"
                           )}
                         </td>
-                        <td className="px-4 py-2 text-gray-600">
+                        <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
                           {file.members} members
                         </td>
                       </tr>
