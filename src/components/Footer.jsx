@@ -6,7 +6,7 @@ const Footer = () => {
       <p className="text-lg">
         © {new Date().getFullYear()} All rights reserved. Created by{" "}
         <a
-          href="https://your-website-link.com" // Replace with your actual link
+          href="https://wa.me/qr/7AQDB3GTR3MOB1" // Replace with your actual link
           target="_blank"
           rel="noopener noreferrer"
           className="font-bold text-blue-400 hover:underline"
