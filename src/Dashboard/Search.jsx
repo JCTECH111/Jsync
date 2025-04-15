@@ -180,7 +180,7 @@ const SearchPage = () => {
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan="8" className="py-4 text-center relative">
+                <td colSpan="8" className="py-4 text-center relative whitespace-nowrap">
                   <SoundWaveLoader />
                 </td>
               </tr>
@@ -188,10 +188,10 @@ const SearchPage = () => {
               documents.map((doc) => (
                 <tr
                   key={doc.$id}
-                  className="h-[5rem] transition-colors hover:bg-gray-100"
+                  className="h-[5rem] transition-colors hover:bg-gray-100 whitespace-nowrap"
                 >
                   {/* Image Column */}
-                  <td className="w-[4rem] px-6 py-4">
+                  <td className="w-[4rem] px-6 py-4 whitespace-nowrap">
                     <img
                       src={doc.user.profile}
                       alt="Profile"
@@ -200,18 +200,18 @@ const SearchPage = () => {
                   </td>
 
                   {/* Username Column */}
-                  <td className="px-6 py-4 text-gray-800">{doc.user.username}</td>
+                  <td className="px-6 py-4 text-gray-800 whitespace-nowrap">{doc.user.username}</td>
 
                   {/* Icon Column */}
-                  <td className="px-6 py-4 text-gray-800">
+                  <td className="px-6 py-4 text-gray-800 whitespace-nowrap">
                     <DocumentIcon className="w-5 h-5 text-gray-400" />
                   </td>
 
                   {/* File Name Column */}
-                  <td className="px-6 py-4 text-gray-800">{doc.fileName}</td>
+                  <td className="px-6 py-4 text-gray-800 whitespace-nowrap">{doc.fileName}</td>
 
                   {/* File Type Column */}
-                  <td className="px-6 py-4 text-gray-800">
+                  <td className="px-6 py-4 text-gray-800 whitespace-nowrap">
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded ${tagStyles[doc.fileType] || "bg-gray-100 text-gray-700"
                         }`}
@@ -221,19 +221,19 @@ const SearchPage = () => {
                   </td>
 
                   {/* File Size Column */}
-                  <td className="px-6 py-4 text-gray-800">{doc.fileSize}</td>
+                  <td className="px-6 py-4 text-gray-800 whitespace-nowrap">{doc.fileSize}</td>
 
                   {/* Label Column */}
-                  <td className="px-6 py-4 text-gray-800">{doc.Label}</td>
+                  <td className="px-6 py-4 text-gray-800 whitespace-nowrap">{doc.Label}</td>
 
                   {/* Date Column */}
-                  <td className="px-6 py-4 text-gray-800">
+                  <td className="px-6 py-4 text-gray-800 whitespace-nowrap">
                     {new Date(doc.createdAt).toLocaleDateString()}{" "}
                     {new Date(doc.createdAt).toLocaleTimeString()}
                   </td>
 
                   {/* Action Column */}
-                  <td className="relative px-6 py-4">
+                  <td className="relative px-6 py-4 whitespace-nowrap">
                     <EllipsisVerticalIcon
                       className="w-6 h-6 text-gray-500 cursor-pointer"
                       onClick={() => handleActionClick(doc.$id)}
