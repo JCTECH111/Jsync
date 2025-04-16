@@ -96,7 +96,7 @@ const SearchPage = () => {
       const result = await getFilesWithSearch(query)
       console.log(result)
       setDocuments(result)
-      toast.success("Search completed successfully!");
+      // toast.success("Search completed successfully!");
     } catch (error) {
       toast.error("Failed to fetch search results. Please try again.", error);
     } finally {
