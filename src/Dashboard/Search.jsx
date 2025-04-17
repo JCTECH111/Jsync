@@ -28,7 +28,7 @@ const SearchPage = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [fileId, setFileId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [uniqueId, setUniqueId] = useState(ID.unique());
+  // const [uniqueId, setUniqueId] = useState(ID.unique());
 
 
   const handleSearchChange = (e) => {
@@ -191,13 +191,14 @@ const SearchPage = () => {
                   className="h-[5rem] transition-colors hover:bg-gray-100 whitespace-nowrap"
                 >
                   {/* Image Column */}
-                  <td className="w-[5rem]  px-6 py-4 whitespace-nowrap">
+                  <td className="w-[5rem] px-6 py-4 whitespace-nowrap">
                     <img
-                      src="https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.8Ck3Lp06jASLSybjpchJJgHaHa%26pid%3DApi&sp=1744926284T6f7f329677ddd2a100f7e5c10f8ee6f561f4c0a8a620edb23245bf8b9768e295"            //{doc.user.profile}
+                      src="https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.-s2xQBsIowKFaw0Lxl8uqAHaHa%26pid%3DApi&sp=1744926498T7235e3ca72e223c7004c2e0b2a37f06b60f685002f449eb0eb8f5a9ea96a5437"
                       alt="Profile"
-                      className="w-[5rem] h-[3rem] object-contain rounded-full border border-gray-300"
+                      className="w-[3rem] h-[3rem] object-cover rounded-full border border-gray-300"
                     />
                   </td>
+
 
                   {/* Username Column */}
                   <td className="px-6 py-4 text-gray-800 whitespace-nowrap">{doc.user.username}</td>
