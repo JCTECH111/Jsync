@@ -3,7 +3,7 @@ import { Databases, Query } from 'appwrite';
 import { client } from '../lib/appwrite';
 import { BookmarkIcon as SolidBookmarkIcon, EyeIcon, ShareIcon } from '@heroicons/react/24/solid';
 import { AuthContext } from '../context/AuthContext';
-import { removeBookmarked } from '../lib/removeBookmarked'
+import { removeBookmarked } from '../lib/removeBookmarked';
 import { ToastContainer, toast } from 'react-toastify';
 import ShareModal from "../components/ShareModal";
 import { viewUrl } from "../lib/viewFile";
@@ -19,11 +19,14 @@ const Bookmarked = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [currentFileLink, setCurrentFileLink] = useState("")
+  const [currentFileLink, setCurrentFileLink] = useState("");
+  const [error, setError] = useState(null);
 
   const databases = useMemo(() => new Databases(client), []);
 
   useEffect(() => {
+    let isMounted = true; // Flag to track component mount status
+
     const fetchBookmarks = async () => {
       try {
         const response = await databases.listDocuments(
@@ -34,9 +37,9 @@ const Bookmarked = () => {
 
         const files = response.documents;
 
+        if (!isMounted) return; // Don't update state if component unmounted
 
         if (files.length === 0) {
-          console.warn("No files found for the user.");
           setBookmarks([]);
           return;
         }
@@ -47,88 +50,85 @@ const Bookmarked = () => {
               const metadataResponse = await databases.listDocuments(
                 databaseId,
                 filesCollectionID,
-                [Query.equal('fileId', file.fileId)] // Corrected to query the document ID
+                [Query.equal('fileId', file.fileId)]
               );
-              const metadata = metadataResponse.documents[0] || {};
-              return { ...file, metadata };
+              return { ...file, metadata: metadataResponse.documents[0] || {} };
             } catch (error) {
               console.error(`Error fetching metadata for file ${file.$id}:`, error);
-              return { ...file, metadata: {} }; // Return empty metadata on error
+              return { ...file, metadata: {} };
             }
           })
         );
 
-        setBookmarks(filesWithMetadata);
-        console.log(filesWithMetadata)
+        if (isMounted) {
+          setBookmarks(filesWithMetadata);
+          setError(null);
+        }
       } catch (error) {
         console.error('Error fetching bookmarks:', error);
-        setBookmarks([]);
+        if (isMounted) {
+          setError('Failed to load bookmarks. Please try again.');
+          setBookmarks([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchBookmarks();
+
+    return () => {
+      isMounted = false; // Cleanup function to prevent state updates after unmount
+    };
   }, [databases, userId]);
 
   const removeBookmark = async (id) => {
     try {
-      // Optimistically update UI by removing the bookmark locally
-      setBookmarks((prev) => prev.filter((bookmark) => bookmark.fileId !== id));
-
-      // Call the function to handle server-side removal
+      // Optimistically update UI
+      setBookmarks(prev => prev.filter(bookmark => bookmark.fileId !== id));
+      
       await removeBookmarked(id);
-
-      // Show success toast
       toast.success("Bookmark removed successfully!");
     } catch (error) {
       console.error("Error removing bookmark:", error);
-
-      // Revert the optimistic update on failure
-      setBookmarks((prev) => [...prev, id]);
-
-      // Show error toast
-      toast.error("An error occurred while removing the bookmark. Please try again.");
+      // Revert optimistic update on error
+      setBookmarks(prev => [...prev]);
+      toast.error("Failed to remove bookmark. Please try again.");
     }
   };
 
   const handleView = async (bucketId, fileId) => {
     try {
       const url = await viewUrl(bucketId, fileId);
-      console.log("View URL:", url);
-
-      // Open the URL in a new tab
       window.open(url, "_blank");
     } catch (error) {
-      alert("Failed to view the file. Please try again.", error);
+      toast.error("Failed to view the file. Please try again.");
+      console.error("View error:", error);
     }
   };
+
   const handleShare = (fileId) => {
     if (!fileId) {
-      toast.error("Please select at least one file to delete.");
+      toast.error("Invalid file selection");
       return;
     }
-
-    const fileLink = `https://jsync.vercel.app/view/${fileId}`; // Generate your file link
-    setCurrentFileLink(fileLink);
+    setCurrentFileLink(`https://jsync.vercel.app/view/${fileId}`);
     setIsShareModalOpen(true);
-  }
+  };
 
   const getFileIcon = (fileName) => {
-    if (!fileName) {
-      return '/placeholder-image.png'; // Default placeholder
-    }
+    if (!fileName) return 'https://th.bing.com/th/id/OIP.KqOFXPxOJaFJd9LSugFlvwHaHa?pid=ImgDetMain';
 
-    const fileExtension = fileName.split('.').pop().toLowerCase(); // Extract file extension
-
-    // Match file types to custom images
+    const fileExtension = fileName.split('.').pop().toLowerCase();
     const fileIcons = {
-      image: 'https://th.bing.com/th/id/OIP.X7MywM3zRnzbj7jlp8CZfAHaHa?pid=ImgDetMain', // Path to custom image icon
-      video: 'https://th.bing.com/th/id/OIP.2BpSe9FyBJBS8TCHtPSqkwAAAA?pcl=1b1a19&pid=ImgDetMain', // Path to custom video icon
-      music: 'https://th.bing.com/th/id/OIP.-aU5kOdBDjL-5wBOJQUsCwHaKT?pid=ImgDetMain', // Path to custom music icon
-      pdf: 'https://th.bing.com/th/id/OIP.hHxtreh34L48Lf-vtvmXkwHaHa?pid=ImgDetMain',     // Path to custom PDF icon
-      word: 'https://th.bing.com/th/id/R.aeb635f0078d89d0dc58f60eb2dde5a3?rik=JsRKRr7SHeIHlQ&pid=ImgRaw&r=0',   // Path to custom MS Word icon
-      default: 'https://th.bing.com/th/id/OIP.KqOFXPxOJaFJd9LSugFlvwHaHa?pid=ImgDetMain', // Default icon
+      image: 'https://th.bing.com/th/id/OIP.X7MywM3zRnzbj7jlp8CZfAHaHa?pid=ImgDetMain',
+      video: 'https://th.bing.com/th/id/OIP.2BpSe9FyBJBS8TCHtPSqkwAAAA?pcl=1b1a19&pid=ImgDetMain',
+      music: 'https://th.bing.com/th/id/OIP.-aU5kOdBDjL-5wBOJQUsCwHaKT?pid=ImgDetMain',
+      pdf: 'https://th.bing.com/th/id/OIP.hHxtreh34L48Lf-vtvmXkwHaHa?pid=ImgDetMain',
+      word: 'https://th.bing.com/th/id/R.aeb635f0078d89d0dc58f60eb2dde5a3?rik=JsRKRr7SHeIHlQ&pid=ImgRaw&r=0',
+      default: 'https://th.bing.com/th/id/OIP.KqOFXPxOJaFJd9LSugFlvwHaHa?pid=ImgDetMain',
     };
 
     if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(fileExtension)) {
@@ -140,102 +140,104 @@ const Bookmarked = () => {
     if (['mp3', 'wav', 'flac', 'aac', 'ogg'].includes(fileExtension)) {
       return fileIcons.music;
     }
-    if (['pdf'].includes(fileExtension)) {
-      return fileIcons.pdf;
-    }
-    if (['doc', 'docx'].includes(fileExtension)) {
-      return fileIcons.word;
-    }
+    if (fileExtension === 'pdf') return fileIcons.pdf;
+    if (['doc', 'docx'].includes(fileExtension)) return fileIcons.word;
 
-    return fileIcons.default; // Return default icon if no match
+    return fileIcons.default;
   };
-
 
   return (
     <div className="container p-6 mx-auto">
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} />
       <h2 className="mb-6 text-2xl font-semibold text-gray-800">Your Bookmarks</h2>
-      {isLoading ? (
-        <div className='w-full items-center justify-center'>
-        <SoundWaveLoader />
+      
+      {error ? (
+        <div className="p-4 text-center text-red-500 bg-red-50 rounded-lg">
+          {error}
+        </div>
+      ) : isLoading ? (
+        <div className="flex items-center justify-center w-full">
+          <SoundWaveLoader />
         </div>
       ) : bookmarks.length === 0 ? (
         <div className="flex flex-col items-center justify-center w-full p-6 bg-gray-100 border border-gray-300 rounded-lg shadow-sm">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-12 h-12 mb-4 text-gray-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M5 10l7-7m0 0l7 7m-7-7v18"
-      />
-    </svg>
-    <p className="text-lg font-semibold text-gray-700">No bookmarks available</p>
-    <p className="mt-2 text-sm text-gray-500">
-      Save your favorite items from public documents being searched to see them here.
-    </p>
-  </div>
-
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-12 h-12 mb-4 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 10l7-7m0 0l7 7m-7-7v18"
+            />
+          </svg>
+          <p className="text-lg font-semibold text-gray-700">No bookmarks available</p>
+          <p className="mt-2 text-sm text-gray-500">
+            Save your favorite items from public documents to see them here.
+          </p>
+        </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {bookmarks.map((bookmark) => (
             <div
-              key={bookmark.$id}
-              className="flex items-start p-4 bg-white border border-gray-200 rounded-lg shadow-md"
+              key={`${bookmark.$id}-${bookmark.fileId}`} // More unique key
+              className="flex flex-col sm:flex-row items-start p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="w-24 h-24 flex-shrink-0">
+              <div className="w-full sm:w-24 h-24 flex-shrink-0 mb-4 sm:mb-0">
                 <img
                   src={getFileIcon(bookmark.metadata.fileName)}
-                  alt={bookmark.notes || 'File'}
+                  alt={bookmark.metadata.fileName || 'File'}
                   className="object-cover w-full h-full rounded-lg"
+                  onError={(e) => {
+                    e.target.src = 'https://th.bing.com/th/id/OIP.KqOFXPxOJaFJd9LSugFlvwHaHa?pid=ImgDetMain';
+                  }}
                 />
-
               </div>
 
-              <div className="flex-1 ml-4">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {bookmark.metadata.fileName || 'Unknown Name'}
+              <div className="flex-1 sm:ml-4 w-full">
+                <h3 className="text-lg font-semibold text-gray-800 truncate">
+                  {bookmark.metadata.fileName || 'Untitled File'}
                 </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  {bookmark.metadata.notes || 'No notes available'}
+                <p className="mt-1 text-sm text-gray-600 line-clamp-2">
+                  {bookmark.metadata.notes || 'No description available'}
                 </p>
                 <p className="mt-2 text-xs text-gray-500">
-                  Bookmarked on: {new Date(bookmark.timestamp).toLocaleDateString()}
+                  Bookmarked on: {new Date(bookmark.$createdAt).toLocaleDateString()}
                 </p>
               </div>
 
-              <div className='flex flex-col gap-4'>
+              <div className="flex sm:flex-col gap-3 mt-4 sm:mt-0 ml-auto">
                 <button
                   onClick={() => removeBookmark(bookmark.fileId)}
-                  className="ml-4 text-blue-600 hover:text-red-600"
-                  id={bookmark.fileId}
+                  className="text-blue-600 hover:text-red-600 transition-colors"
+                  aria-label="Remove bookmark"
                 >
-                  <SolidBookmarkIcon className="w-6 h-6" />
+                  <SolidBookmarkIcon className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => handleView(fileBucketID, bookmark.fileId)}
-                  className="ml-4 text-gray-600 hover:text-blue-600"
-                  id={bookmark.fileId}
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                  aria-label="View file"
                 >
-                  <EyeIcon className="w-6 h-6" />
+                  <EyeIcon className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => handleShare(bookmark.fileId)}
-                  className="ml-4 text-blue-600 hover:text-blue-700"
-                  id={bookmark.fileId}
+                  className="text-blue-600 hover:text-blue-700 transition-colors"
+                  aria-label="Share file"
                 >
-                  <ShareIcon className="w-6 h-6" />
+                  <ShareIcon className="w-5 h-5" />
                 </button>
               </div>
             </div>
           ))}
         </div>
       )}
+
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
